@@ -1,0 +1,19 @@
+<Project>
+  <!-- Switch to a local project reference when the sibling Plumix repo is present -->
+  <PropertyGroup>
+    <_PlumixCsproj>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../../Plumix/Plumix/src/Plumix/Plumix.csproj'))</_PlumixCsproj>
+    <_PlumixLocal>$([System.IO.File]::Exists('$(_PlumixCsproj)'))</_PlumixLocal>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>Plumix Contributors</Authors>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/Plumix-Net/Plumix.Packages</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/Plumix-Net/Plumix.Packages</PackageProjectUrl>
+    <PackageTags>avalonia;flutter;ui;cross-platform;dotnet;plumix</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+</Project>

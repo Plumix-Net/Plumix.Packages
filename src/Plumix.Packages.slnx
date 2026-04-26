@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Plumix.Bloc/Plumix.Bloc.csproj" />
+  <Project Path="Plumix.Provider/Plumix.Provider.csproj" />
+</Solution>
