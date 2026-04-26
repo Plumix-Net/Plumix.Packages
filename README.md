@@ -7,7 +7,7 @@ Ports of popular Flutter packages for [Plumix](https://github.com/Plumix-Net/Plu
 | Package | NuGet | Flutter equivalent | Status |
 |---------|-------|--------------------|--------|
 | `Plumix.Provider` | [![NuGet](https://img.shields.io/nuget/v/Plumix.Provider)](https://www.nuget.org/packages/Plumix.Provider) | [provider](https://pub.dev/packages/provider) | alpha |
-| `Plumix.Bloc` | [![NuGet](https://img.shields.io/nuget/v/Plumix.Bloc)](https://www.nuget.org/packages/Plumix.Bloc) | [bloc](https://pub.dev/packages/bloc) | planned |
+| `Plumix.Bloc` | [![NuGet](https://img.shields.io/nuget/v/Plumix.Bloc)](https://www.nuget.org/packages/Plumix.Bloc) | [bloc](https://pub.dev/packages/bloc) + [flutter_bloc](https://pub.dev/packages/flutter_bloc) | alpha |
 
 ---
 
@@ -85,9 +85,7 @@ new Consumer<CounterModel>(
 
 ## Plumix.Bloc
 
-> **Status: planned.** See [Bloc.cs](src/Plumix.Bloc/Bloc.cs) for the full design TODO.
-
-A port of Flutter's `bloc` package — stream-based state management with `Cubit<TState>` and `Bloc<TEvent, TState>`.
+State management for Plumix with `Cubit<TState>` and `Bloc<TEvent, TState>`, plus widget bindings from `flutter_bloc`: `BlocProvider`, `BlocBuilder`, `BlocListener`, `BlocConsumer`, and `BlocSelector`.
 
 ---
 
