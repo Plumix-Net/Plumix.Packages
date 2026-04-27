@@ -57,6 +57,14 @@ new BlocProvider<CounterCubit>(
     child: new AppRoot())
 ```
 
+Create-and-own variant (auto-closes on unmount):
+
+```csharp
+new BlocProvider<CounterCubit>(
+    create: _ => new CounterCubit(),
+    child: new AppRoot())
+```
+
 ### 3. Build UI from state
 
 ```csharp
