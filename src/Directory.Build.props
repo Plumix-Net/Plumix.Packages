@@ -1,8 +1,25 @@
 <Project>
-  <!-- Switch to a local project reference when the sibling Plumix repo is present -->
   <PropertyGroup>
-    <_PlumixCsproj>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../../Plumix/Plumix/src/Plumix/Plumix.csproj'))</_PlumixCsproj>
-    <_PlumixLocal>$([System.IO.File]::Exists('$(_PlumixCsproj)'))</_PlumixLocal>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <!-- Switch to a local project reference when the sibling Plumix repo is present.
+       Override with -p:UsePlumixLocal=false. Never used on CI: published packages
+       must depend on the pinned NuGet version from Directory.Packages.props. -->
+  <PropertyGroup>
+    <_PlumixCsproj>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../../Plumix/src/Plumix/Plumix.csproj'))</_PlumixCsproj>
+    <UsePlumixLocal Condition="'$(UsePlumixLocal)' == ''">$([System.IO.File]::Exists('$(_PlumixCsproj)'))</UsePlumixLocal>
+    <UsePlumixLocal Condition="'$(ContinuousIntegrationBuild)' == 'true'">false</UsePlumixLocal>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -14,6 +31,30 @@
     <PackageTags>avalonia;flutter;ui;cross-platform;dotnet;plumix</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
+    <!-- Disable packaging by default; library projects opt in explicitly -->
     <IsPackable>false</IsPackable>
+    <!-- Release versions come from the v*.*.* tag via -p:Version on CI;
+         local packs are explicitly marked as dev builds. -->
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <VersionSuffix>dev</VersionSuffix>
+    <!-- SourceLink / deterministic packages -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
+
+  <!-- Shared package content and the Plumix dependency for packable projects -->
+  <ItemGroup Condition="'$(IsPackable)' == 'true'">
+    <None Include="$(MSBuildProjectDirectory)/README.md" Pack="true" PackagePath="\" />
+    <None Include="$(MSBuildThisFileDirectory)../LICENSE" Pack="true" PackagePath="\" />
+    <None Include="$(MSBuildThisFileDirectory)../icon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IsPackable)' == 'true' and '$(UsePlumixLocal)' != 'true'">
+    <PackageReference Include="Plumix" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(IsPackable)' == 'true' and '$(UsePlumixLocal)' == 'true'">
+    <ProjectReference Include="$(_PlumixCsproj)" />
+  </ItemGroup>
 </Project>

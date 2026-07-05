@@ -2,16 +2,30 @@
 
 namespace Plumix.Bloc;
 
+/// <summary>
+/// An event-driven <see cref="Cubit{TState}"/>: events added via <see cref="Add"/> are dispatched
+/// to handlers registered with <see cref="On{THandledEvent}"/>, which emit new states.
+///
+/// Equivalent to bloc's <c>Bloc&lt;Event, State&gt;</c>.
+/// </summary>
+/// <typeparam name="TEvent">The base type of events this bloc handles.</typeparam>
+/// <typeparam name="TState">The type of the managed state.</typeparam>
 public class Bloc<TEvent, TState> : Cubit<TState>
 {
     private readonly object _registrationsGate = new();
     private readonly List<IEventRegistration> _registrations = [];
     private readonly CancellationTokenSource _shutdown = new();
 
+    /// <summary>Creates the bloc with its initial state.</summary>
     public Bloc(TState initialState) : base(initialState)
     {
     }
 
+    /// <summary>
+    /// Adds an event, dispatching it to every matching handler registered with
+    /// <see cref="On{THandledEvent}"/>. Handlers run asynchronously.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">The bloc is closed.</exception>
     public void Add(TEvent @event)
     {
         ArgumentNullException.ThrowIfNull(@event);
@@ -34,6 +48,15 @@ public class Bloc<TEvent, TState> : Cubit<TState>
         }
     }
 
+    /// <summary>
+    /// Registers a handler for events of type <typeparamref name="THandledEvent"/>.
+    /// Call from the constructor, once per event type.
+    /// </summary>
+    /// <param name="handler">Processes the event and emits resulting states.</param>
+    /// <param name="transformer">
+    /// Controls concurrency for this handler; defaults to
+    /// <see cref="EventTransformers.Sequential{TEvent}"/>.
+    /// </param>
     protected void On<THandledEvent>(
         BlocEventHandler<THandledEvent, TState> handler,
         EventTransformer<THandledEvent>? transformer = null)
@@ -50,6 +73,7 @@ public class Bloc<TEvent, TState> : Cubit<TState>
         }
     }
 
+    /// <inheritdoc />
     public override void Close()
     {
         if (IsClosed)
@@ -95,6 +119,10 @@ public class Bloc<TEvent, TState> : Cubit<TState>
         ReportError(wrapped);
     }
 
+    /// <summary>
+    /// Called on every event-driven state transition before the state is emitted.
+    /// The base implementation forwards the transition to <see cref="Bloc.Observer"/>.
+    /// </summary>
     protected virtual void OnTransition(Transition<TEvent, TState> transition)
     {
         Bloc.NotifyObserver(observer => observer.OnTransition(this, transition));
@@ -132,10 +160,10 @@ public class Bloc<TEvent, TState> : Cubit<TState>
             switch (mode)
             {
                 case EventConcurrency.Sequential:
-                    StartTask(typedEvent, CancellationToken.None, sequential: true);
+                    StartTask(typedEvent, sequential: true, CancellationToken.None);
                     break;
                 case EventConcurrency.Concurrent:
-                    StartTask(typedEvent, CancellationToken.None, sequential: false);
+                    StartTask(typedEvent, sequential: false, CancellationToken.None);
                     break;
                 case EventConcurrency.Restartable:
                     StartRestartable(typedEvent);
@@ -144,7 +172,7 @@ public class Bloc<TEvent, TState> : Cubit<TState>
                     StartDroppable(typedEvent);
                     break;
                 default:
-                    StartTask(typedEvent, CancellationToken.None, sequential: true);
+                    StartTask(typedEvent, sequential: true, CancellationToken.None);
                     break;
             }
         }
@@ -182,7 +210,7 @@ public class Bloc<TEvent, TState> : Cubit<TState>
                 token = _restartableToken.Token;
             }
 
-            StartTask(@event, token, sequential: false);
+            StartTask(@event, sequential: false, token);
         }
 
         private void StartDroppable(THandledEvent @event)
@@ -194,11 +222,11 @@ public class Bloc<TEvent, TState> : Cubit<TState>
                     return;
                 }
 
-                StartTask(@event, CancellationToken.None, sequential: false);
+                StartTask(@event, sequential: false, CancellationToken.None);
             }
         }
 
-        private void StartTask(THandledEvent @event, CancellationToken token, bool sequential)
+        private void StartTask(THandledEvent @event, bool sequential, CancellationToken token)
         {
             if (_disposed || shutdownToken.IsCancellationRequested)
             {

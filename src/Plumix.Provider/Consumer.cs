@@ -19,13 +19,20 @@ namespace Plumix.Provider;
 /// </summary>
 public sealed class Consumer<T> : StatelessWidget where T : ChangeNotifier
 {
+    /// <summary>
+    /// Creates the consumer.
+    /// </summary>
+    /// <param name="builder">Builds the subtree from the current notifier.</param>
+    /// <param name="key">The widget key.</param>
     public Consumer(Func<BuildContext, T, Widget> builder, Key? key = null) : base(key)
     {
         Builder = builder;
     }
 
+    /// <summary>Builds the subtree from the current notifier.</summary>
     public Func<BuildContext, T, Widget> Builder { get; }
 
+    /// <inheritdoc />
     public override Widget Build(BuildContext context)
     {
         var notifier = context.Watch<T>();
@@ -42,13 +49,20 @@ public sealed class Consumer2<TA, TB> : StatelessWidget
     where TA : ChangeNotifier
     where TB : ChangeNotifier
 {
+    /// <summary>
+    /// Creates the consumer.
+    /// </summary>
+    /// <param name="builder">Builds the subtree from the two current notifiers.</param>
+    /// <param name="key">The widget key.</param>
     public Consumer2(Func<BuildContext, TA, TB, Widget> builder, Key? key = null) : base(key)
     {
         Builder = builder;
     }
 
+    /// <summary>Builds the subtree from the two current notifiers.</summary>
     public Func<BuildContext, TA, TB, Widget> Builder { get; }
 
+    /// <inheritdoc />
     public override Widget Build(BuildContext context)
     {
         var a = context.Watch<TA>();

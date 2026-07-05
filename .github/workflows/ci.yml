@@ -24,6 +24,14 @@ jobs:
       - name: Build
         run: dotnet build src/Plumix.Packages.slnx -c Release
 
+      - name: Test
+        run: dotnet test src/Plumix.Packages.slnx -c Release --no-build
+
+      # Smoke-check packaging so broken pack inputs (README, icon, license)
+      # surface on every PR instead of only on release tags
+      - name: Pack (verify)
+        run: dotnet pack src/Plumix.Packages.slnx -c Release --no-build
+
   # ─── Pack & Publish (tags only) ────────────────────────────────────────────
   publish:
     name: Pack & Publish to NuGet
@@ -49,6 +57,7 @@ jobs:
           dotnet pack src/Plumix.Provider/Plumix.Provider.csproj -c Release -p:Version=$PKG_VERSION
           dotnet pack src/Plumix.Bloc/Plumix.Bloc.csproj         -c Release -p:Version=$PKG_VERSION
 
+      # Symbol packages (.snupkg) are pushed automatically alongside each .nupkg
       - name: Push to NuGet.org
         run: |
           for pkg in \

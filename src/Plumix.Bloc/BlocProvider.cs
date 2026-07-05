@@ -5,6 +5,13 @@ using Plumix.Widgets;
 
 namespace Plumix.Bloc;
 
+/// <summary>
+/// Provides a bloc or cubit to the widget subtree so descendants can obtain it via
+/// <see cref="Of"/>, <see cref="ReadOf"/> or the <c>context.Watch</c>/<c>context.Read</c> extensions.
+///
+/// Equivalent to flutter_bloc's <c>BlocProvider&lt;T&gt;</c>.
+/// </summary>
+/// <typeparam name="TBloc">The provided bloc/cubit type.</typeparam>
 public sealed class BlocProvider<TBloc> : StatefulWidget where TBloc : class, IBlocBase
 {
     private readonly TBloc? _bloc;
@@ -28,28 +35,40 @@ public sealed class BlocProvider<TBloc> : StatefulWidget where TBloc : class, IB
         Child = child ?? throw new ArgumentNullException(nameof(child));
     }
 
+    /// <summary>The subtree that gains access to the bloc.</summary>
     public Widget Child { get; }
 
+    /// <inheritdoc />
     public override State CreateState() => new BlocProviderState();
 
     private bool HasCreate => _create is not null;
     private TBloc ExistingBloc => _bloc ?? throw new InvalidOperationException("Expected an existing bloc instance.");
     private Func<BuildContext, TBloc> CreateBloc => _create ?? throw new InvalidOperationException("Expected a create delegate.");
 
+    /// <summary>
+    /// Returns the nearest provided bloc and subscribes the calling widget to rebuilds.
+    /// Throws if no provider is found in the ancestor tree.
+    /// </summary>
     public static TBloc Of(BuildContext context)
         => MaybeOf(context)
            ?? throw new InvalidOperationException(
                $"No BlocProvider<{typeof(TBloc).Name}> found in the widget tree. " +
                $"Place BlocProvider<{typeof(TBloc).Name}> above this widget.");
 
+    /// <summary>Like <see cref="Of"/>, but returns <c>null</c> when no provider is in scope.</summary>
     public static TBloc? MaybeOf(BuildContext context)
         => context.DependOnInherited<BlocProviderScope<TBloc>>()?.Notifier;
 
+    /// <summary>
+    /// Returns the nearest provided bloc without subscribing to rebuilds.
+    /// Use inside event handlers and callbacks.
+    /// </summary>
     public static TBloc ReadOf(BuildContext context)
         => ReadMaybeOf(context)
            ?? throw new InvalidOperationException(
                $"No BlocProvider<{typeof(TBloc).Name}> found in the widget tree.");
 
+    /// <summary>Like <see cref="ReadOf"/>, but returns <c>null</c> when no provider is in scope.</summary>
     public static TBloc? ReadMaybeOf(BuildContext context)
         => context.GetInherited<BlocProviderScope<TBloc>>()?.Notifier;
 

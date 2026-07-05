@@ -31,6 +31,12 @@ namespace Plumix.Provider;
 /// </summary>
 public sealed class ChangeNotifierProvider<T> : InheritedNotifier<T> where T : ChangeNotifier
 {
+    /// <summary>
+    /// Creates the provider.
+    /// </summary>
+    /// <param name="notifier">The notifier exposed to descendants. Ownership stays external.</param>
+    /// <param name="child">The subtree that gains access to the notifier.</param>
+    /// <param name="key">The widget key.</param>
     public ChangeNotifierProvider(T notifier, Widget child, Key? key = null)
         : base(notifier, child, key)
     {

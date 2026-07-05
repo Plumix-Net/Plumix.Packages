@@ -1,0 +1,26 @@
+root = true
+
+[*]
+charset = utf-8
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.{props,targets,csproj,slnx,xml,yml,yaml,json}]
+indent_size = 2
+
+[*.cs]
+csharp_style_namespace_declarations = file_scoped:warning
+
+# Intentional Flutter-parity API surface, do not "fix":
+# CA1000 — static Of/MaybeOf/ReadOf accessors on generic provider types (Provider<T>.Of(context))
+# CA1711 — BlocEventHandler delegate mirrors bloc's EventHandler<Event, State> name
+# CA1716 — event/error parameter names on observer members mirror bloc's onEvent/onError
+dotnet_diagnostic.CA1000.severity = none
+dotnet_diagnostic.CA1711.severity = none
+dotnet_diagnostic.CA1716.severity = none
+
+# Test projects: Method_Scenario_ExpectedResult naming uses underscores
+[src/*.Tests/**.cs]
+dotnet_diagnostic.CA1707.severity = none

@@ -5,9 +5,27 @@ using Plumix.Widgets;
 
 namespace Plumix.Bloc;
 
+/// <summary>
+/// Rebuilds its subtree from <c>builder</c> whenever the bloc emits a new state.
+///
+/// Equivalent to flutter_bloc's <c>BlocBuilder&lt;B, S&gt;</c>.
+/// </summary>
+/// <typeparam name="TBloc">The observed bloc/cubit type.</typeparam>
+/// <typeparam name="TState">The type of the bloc's state.</typeparam>
 public sealed class BlocBuilder<TBloc, TState> : StatefulWidget
     where TBloc : class, IBlocBase<TState>
 {
+    /// <summary>
+    /// Creates the builder widget.
+    /// </summary>
+    /// <param name="builder">Builds the subtree for the current state.</param>
+    /// <param name="bloc">
+    /// The bloc to observe; when <c>null</c>, the nearest <see cref="BlocProvider{TBloc}"/> is used.
+    /// </param>
+    /// <param name="buildWhen">
+    /// Optional predicate <c>(previous, next)</c> deciding whether to rebuild; defaults to always.
+    /// </param>
+    /// <param name="key">The widget key.</param>
     public BlocBuilder(
         Func<BuildContext, TState, Widget> builder,
         TBloc? bloc = null,
@@ -20,10 +38,16 @@ public sealed class BlocBuilder<TBloc, TState> : StatefulWidget
         BuildWhen = buildWhen;
     }
 
+    /// <summary>Builds the subtree for the current state.</summary>
     public Func<BuildContext, TState, Widget> Builder { get; }
+
+    /// <summary>Optional predicate <c>(previous, next)</c> deciding whether to rebuild.</summary>
     public Func<TState, TState, bool>? BuildWhen { get; }
+
+    /// <summary>The explicitly supplied bloc, or <c>null</c> to resolve from the tree.</summary>
     public TBloc? Bloc { get; }
 
+    /// <inheritdoc />
     public override State CreateState() => new BlocBuilderState();
 
     private sealed class BlocBuilderState : State

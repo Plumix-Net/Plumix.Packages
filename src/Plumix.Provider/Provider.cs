@@ -28,17 +28,28 @@ namespace Plumix.Provider;
 /// </summary>
 public sealed class Provider<T> : InheritedWidget
 {
+    /// <summary>
+    /// Creates the provider.
+    /// </summary>
+    /// <param name="value">The value exposed to descendants.</param>
+    /// <param name="child">The subtree that gains access to the value.</param>
+    /// <param name="key">The widget key.</param>
     public Provider(T value, Widget child, Key? key = null) : base(key)
     {
         Value = value;
         Child = child;
     }
 
+    /// <summary>The value exposed to descendants.</summary>
     public T Value { get; }
+
+    /// <summary>The subtree that gains access to the value.</summary>
     public Widget Child { get; }
 
+    /// <inheritdoc />
     public override Widget Build(BuildContext context) => Child;
 
+    /// <inheritdoc />
     protected override bool UpdateShouldNotify(InheritedWidget oldWidget)
         => !EqualityComparer<T>.Default.Equals(((Provider<T>)oldWidget).Value, Value);
 

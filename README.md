@@ -94,12 +94,23 @@ State management for Plumix with `Cubit<TState>` and `Bloc<TEvent, TState>`, plu
 The solution auto-detects the sibling `Plumix` repo and switches to a project reference when found:
 
 ```
-~/
+<workspace>/
 ├── Plumix/          ← main framework repo
 └── Plumix.Packages/ ← this repo
 ```
 
+To force the published NuGet package instead, pass `-p:UsePlumixLocal=false`.
+CI always builds against the pinned NuGet version from `src/Directory.Packages.props`.
+
+Build and test:
+
+```
+dotnet build src/Plumix.Packages.slnx -c Release
+dotnet test src/Plumix.Packages.slnx -c Release
+```
+
 ## Publishing
 
-Packages are published to NuGet.org automatically when a `v*.*.*` tag is pushed.
+Packages are published to NuGet.org automatically when a `v*.*.*` tag is pushed
+(the version is taken from the tag; symbol packages are pushed alongside).
 Set the `NUGET_API_KEY` secret in repository settings.

@@ -5,9 +5,27 @@ using Plumix.Widgets;
 
 namespace Plumix.Bloc;
 
+/// <summary>
+/// Rebuilds only when the value derived from the state by <c>selector</c> changes,
+/// avoiding rebuilds for irrelevant state updates.
+///
+/// Equivalent to flutter_bloc's <c>BlocSelector&lt;B, S, T&gt;</c>.
+/// </summary>
+/// <typeparam name="TBloc">The observed bloc/cubit type.</typeparam>
+/// <typeparam name="TState">The type of the bloc's state.</typeparam>
+/// <typeparam name="TSelected">The type of the derived value.</typeparam>
 public sealed class BlocSelector<TBloc, TState, TSelected> : StatefulWidget
     where TBloc : class, IBlocBase<TState>
 {
+    /// <summary>
+    /// Creates the selector widget.
+    /// </summary>
+    /// <param name="selector">Derives the observed value from the state.</param>
+    /// <param name="builder">Builds the subtree for the current derived value.</param>
+    /// <param name="bloc">
+    /// The bloc to observe; when <c>null</c>, the nearest <see cref="BlocProvider{TBloc}"/> is used.
+    /// </param>
+    /// <param name="key">The widget key.</param>
     public BlocSelector(
         Func<TState, TSelected> selector,
         Func<BuildContext, TSelected, Widget> builder,
@@ -20,10 +38,16 @@ public sealed class BlocSelector<TBloc, TState, TSelected> : StatefulWidget
         Bloc = bloc;
     }
 
+    /// <summary>Derives the observed value from the state.</summary>
     public Func<TState, TSelected> Selector { get; }
+
+    /// <summary>Builds the subtree for the current derived value.</summary>
     public Func<BuildContext, TSelected, Widget> Builder { get; }
+
+    /// <summary>The explicitly supplied bloc, or <c>null</c> to resolve from the tree.</summary>
     public TBloc? Bloc { get; }
 
+    /// <inheritdoc />
     public override State CreateState() => new BlocSelectorState();
 
     private sealed class BlocSelectorState : State
