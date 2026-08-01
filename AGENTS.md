@@ -15,6 +15,7 @@ This file defines expectations for coding agents working in this repository.
 |------|----------|-----------------------|
 | `src/Plumix.Provider` | `Provider`, `ChangeNotifierProvider`, `Consumer`, `MultiProvider`, `context.Watch/Read` | [provider](https://pub.dev/packages/provider) |
 | `src/Plumix.Bloc` | `Cubit`, `Bloc`, `BlocProvider`, `BlocBuilder`, `BlocListener`, `BlocConsumer`, `BlocSelector` | [bloc](https://pub.dev/packages/bloc) + [flutter_bloc](https://pub.dev/packages/flutter_bloc) |
+| `src/Plumix.Slang` | `ITranslations`, `TranslationProvider`, `Translations.Of(context)`, `LocaleSettings` — widget layer over [Slang.Net](https://www.nuget.org/packages/Slang.Net) | [slang_flutter](https://pub.dev/packages/slang_flutter) |
 | `src/*.Tests` | xunit test projects, one per package | — |
 
 ## Change Guidelines

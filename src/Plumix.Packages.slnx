@@ -3,4 +3,6 @@
   <Project Path="Plumix.Bloc.Tests/Plumix.Bloc.Tests.csproj" />
   <Project Path="Plumix.Provider/Plumix.Provider.csproj" />
   <Project Path="Plumix.Provider.Tests/Plumix.Provider.Tests.csproj" />
+  <Project Path="Plumix.Slang/Plumix.Slang.csproj" />
+  <Project Path="Plumix.Slang.Tests/Plumix.Slang.Tests.csproj" />
 </Solution>

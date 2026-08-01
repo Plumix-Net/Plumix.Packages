@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>Plumix.Slang</PackageId>
+    <Description>A port of Flutter's slang_flutter package for Plumix. Context-based translations over Slang.Net: TranslationProvider, Translations.Of(context), LocaleSettings — locale switches repaint the widget tree instantly.</Description>
+  </PropertyGroup>
+
+</Project>

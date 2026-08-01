@@ -56,13 +56,15 @@ jobs:
         run: |
           dotnet pack src/Plumix.Provider/Plumix.Provider.csproj -c Release -p:Version=$PKG_VERSION
           dotnet pack src/Plumix.Bloc/Plumix.Bloc.csproj         -c Release -p:Version=$PKG_VERSION
+          dotnet pack src/Plumix.Slang/Plumix.Slang.csproj       -c Release -p:Version=$PKG_VERSION
 
       # Symbol packages (.snupkg) are pushed automatically alongside each .nupkg
       - name: Push to NuGet.org
         run: |
           for pkg in \
             src/Plumix.Provider/bin/Release/Plumix.Provider.${PKG_VERSION}.nupkg \
-            src/Plumix.Bloc/bin/Release/Plumix.Bloc.${PKG_VERSION}.nupkg; do
+            src/Plumix.Bloc/bin/Release/Plumix.Bloc.${PKG_VERSION}.nupkg \
+            src/Plumix.Slang/bin/Release/Plumix.Slang.${PKG_VERSION}.nupkg; do
             if [ -f "$pkg" ]; then
               dotnet nuget push "$pkg" \
                 --api-key ${{ secrets.NUGET_API_KEY }} \

@@ -8,6 +8,7 @@ Ports of popular Flutter packages for [Plumix](https://github.com/Plumix-Net/Plu
 |---------|-------|--------------------|--------|
 | `Plumix.Provider` | [![NuGet](https://img.shields.io/nuget/v/Plumix.Provider)](https://www.nuget.org/packages/Plumix.Provider) | [provider](https://pub.dev/packages/provider) | alpha |
 | `Plumix.Bloc` | [![NuGet](https://img.shields.io/nuget/v/Plumix.Bloc)](https://www.nuget.org/packages/Plumix.Bloc) | [bloc](https://pub.dev/packages/bloc) + [flutter_bloc](https://pub.dev/packages/flutter_bloc) | alpha |
+| `Plumix.Slang` | [![NuGet](https://img.shields.io/nuget/v/Plumix.Slang)](https://www.nuget.org/packages/Plumix.Slang) | [slang_flutter](https://pub.dev/packages/slang_flutter) | alpha |
 
 ---
 
@@ -86,6 +87,38 @@ new Consumer<CounterModel>(
 ## Plumix.Bloc
 
 State management for Plumix with `Cubit<TState>` and `Bloc<TEvent, TState>`, plus widget bindings from `flutter_bloc`: `BlocProvider`, `BlocBuilder`, `BlocListener`, `BlocConsumer`, and `BlocSelector`.
+
+---
+
+## Plumix.Slang
+
+Context-based translations over [Slang.Net](https://www.nuget.org/packages/Slang.Net) — a port of `slang_flutter`.
+`TranslationProvider<T>` publishes the active translations into the widget tree, so switching the
+locale repaints everything that read them through `Translations<T>.Of(context)`.
+
+### Usage
+
+#### 1. Opt the generated class in
+
+```csharp
+[Translations(InputFileName = "strings")]
+public partial class Strings : ITranslations<Strings>
+{
+    static Strings ITranslations<Strings>.CurrentTranslations => Instance.Root;
+    static INotifyPropertyChanged ITranslations<Strings>.ChangeSource => Instance;
+}
+```
+
+#### 2. Wrap the app and read from the context
+
+```csharp
+new TranslationProvider<Strings>(child: new MyApp())
+
+var t = Translations<Strings>.Of(context);   // rebuilds on every switch
+LocaleSettings<Strings>.SetLocaleRaw("en-US");
+```
+
+See [`src/Plumix.Slang/README.md`](src/Plumix.Slang/README.md) for the full API.
 
 ---
 
