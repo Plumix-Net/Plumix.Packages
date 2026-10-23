@@ -32,6 +32,48 @@ jobs:
       - name: Pack (verify)
         run: dotnet pack src/Plumix.Packages.slnx -c Release --no-build
 
+      # Rebuild and retest against the Plumix version the packed nuspecs actually declare
+      # as their minimum, so a package never promises compatibility it was not tested with
+      - name: Test against nuspec Plumix dependency
+        run: |
+          set -euo pipefail
+          deps=$(for pkg in src/Plumix.*/bin/Release/Plumix.*.nupkg; do
+            unzip -p "$pkg" '*.nuspec' \
+              | sed -n 's/.*<dependency id="Plumix" version="\([^"]*\)".*/\1/p'
+          done | sort -u)
+          if [ "$(echo "$deps" | wc -l)" -ne 1 ] || [ -z "$deps" ]; then
+            echo "::error::Packages must declare one Plumix dependency, found: $deps"
+            exit 1
+          fi
+          # "X" means >= X; "[X, Y)" is a range — test its lower bound
+          min=$(echo "$deps" | sed 's/^[[(]//; s/,.*$//; s/[])]$//; s/ //g')
+          echo "Testing against Plumix $min (nuspec: $deps)"
+          dotnet test src/Plumix.Packages.slnx -c Release \
+            -p:UsePlumixLocal=false -p:PlumixVersion="$min"
+
+  # ─── Canary: newest Plumix on NuGet (non-blocking) ─────────────────────────
+  # Warns early when a new Plumix release breaks the packages, before users hit it
+  plumix-latest:
+    name: Build against latest Plumix
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Test
+        run: |
+          set -euo pipefail
+          latest=$(curl -fsSL https://api.nuget.org/v3-flatcontainer/plumix/index.json | jq -r '.versions[-1]')
+          echo "Testing against Plumix $latest"
+          dotnet test src/Plumix.Packages.slnx -c Release \
+            -p:UsePlumixLocal=false -p:PlumixVersion="$latest"
+
   # ─── Pack & Publish (tags only) ────────────────────────────────────────────
   publish:
     name: Pack & Publish to NuGet

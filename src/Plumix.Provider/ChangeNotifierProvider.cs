@@ -54,7 +54,7 @@ public sealed class ChangeNotifierProvider<T> : InheritedNotifier<T> where T : C
 
     /// <summary>Returns the notifier or <c>null</c> if no provider is in scope.</summary>
     public static T? MaybeOf(BuildContext context)
-        => context.DependOnInherited<ChangeNotifierProvider<T>>()?.Notifier;
+        => context.DependOnInheritedWidgetOfExactType<ChangeNotifierProvider<T>>()?.Notifier;
 
     /// <summary>
     /// Returns the notifier without subscribing to rebuilds.
@@ -67,5 +67,5 @@ public sealed class ChangeNotifierProvider<T> : InheritedNotifier<T> where T : C
 
     /// <summary>Reads the notifier without subscribing, or returns <c>null</c>.</summary>
     public static T? ReadMaybeOf(BuildContext context)
-        => context.GetInherited<ChangeNotifierProvider<T>>()?.Notifier;
+        => context.GetInheritedWidgetOfExactType<ChangeNotifierProvider<T>>()?.Notifier;
 }

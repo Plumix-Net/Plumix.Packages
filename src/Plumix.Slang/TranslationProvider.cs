@@ -105,11 +105,10 @@ public sealed class TranslationScope<T> : InheritedWidget
     where T : class, ITranslations<T>
 {
     internal TranslationScope(T translations, CultureInfo culture, Widget child, Key? key = null)
-        : base(key)
+        : base(child, key)
     {
         Translations = translations;
         Culture = culture;
-        Child = child;
     }
 
     /// <summary>The translations tree for <see cref="Culture"/>.</summary>
@@ -118,14 +117,8 @@ public sealed class TranslationScope<T> : InheritedWidget
     /// <summary>The culture that was active when this scope was published.</summary>
     public CultureInfo Culture { get; }
 
-    /// <summary>The subtree that gains access to the translations.</summary>
-    public Widget Child { get; }
-
     /// <inheritdoc />
-    public override Widget Build(BuildContext context) => Child;
-
-    /// <inheritdoc />
-    protected override bool UpdateShouldNotify(InheritedWidget oldWidget)
+    public override bool UpdateShouldNotify(InheritedWidget oldWidget)
     {
         var old = (TranslationScope<T>)oldWidget;
 

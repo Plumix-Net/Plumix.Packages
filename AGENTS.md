@@ -57,5 +57,11 @@ dotnet pack  src/Plumix.Packages.slnx -c Release   # packaging smoke check
 - Push a `v*.*.*` tag; CI packs with that version and publishes both packages
   (plus `.snupkg` symbols) to NuGet.org. All packages share one version line.
 - Record shipped changes in `CHANGELOG.md` (short entries, a few lines per change).
-- Do not hardcode `Version` in csproj files; local packs are versioned `0.1.0-dev`
+- `PlumixVersion` in `src/Directory.Packages.props` is the minimum Plumix version every
+  nuspec declares (`>=`). When a Plumix release breaks binary compatibility, raise it to that
+  release in the same change that ports the code. Do not repeat version numbers in READMEs
+  or the changelog — the tag sets the package version, the nuspec carries the Plumix floor.
+  Never ship a dependency floor the packages were not tested against — CI re-tests against
+  the version read from the packed nuspecs.
+- Do not hardcode `Version` in csproj files; local packs get the placeholder `0.0.0-dev`
   via `VersionPrefix`/`VersionSuffix` in `src/Directory.Build.props`.

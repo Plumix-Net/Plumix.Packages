@@ -34,8 +34,8 @@
     <!-- Disable packaging by default; library projects opt in explicitly -->
     <IsPackable>false</IsPackable>
     <!-- Release versions come from the v*.*.* tag via -p:Version on CI;
-         local packs are explicitly marked as dev builds. -->
-    <VersionPrefix>0.1.0</VersionPrefix>
+         local packs get a placeholder dev version. -->
+    <VersionPrefix>0.0.0</VersionPrefix>
     <VersionSuffix>dev</VersionSuffix>
     <!-- SourceLink / deterministic packages -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>

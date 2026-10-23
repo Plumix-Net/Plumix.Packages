@@ -1,9 +1,14 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <!-- Minimum Plumix version the packages are built and tested against; it becomes the
+         lower bound of the Plumix dependency in every nuspec. Raise it together with any
+         Plumix release that breaks binary compatibility.
+         CI overrides it with -p:PlumixVersion=... to re-test against the packed dependency. -->
+    <PlumixVersion Condition="'$(PlumixVersion)' == ''">0.3.0-alpha.3</PlumixVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Plumix" Version="0.1.0-alpha.13" />
+    <PackageVersion Include="Plumix" Version="$(PlumixVersion)" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.4.0" />
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />

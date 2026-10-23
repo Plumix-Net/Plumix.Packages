@@ -2,14 +2,21 @@
 
 ## Unreleased
 
+- **Raised the minimum Plumix dependency** to the release with the strict `InheritedWidget`
+  port. Previous releases fail with it at runtime (`MissingMethodException` on the
+  `InheritedWidget` constructor). Ported to the `InheritedWidget(child, key)` API:
+  `Provider<T>`, `RepositoryProvider<T>` and `TranslationScope<T>` use the base `Child`, no
+  longer override `Build`, and expose `UpdateShouldNotify` as public; lookups use
+  `DependOnInheritedWidgetOfExactType` / `GetInheritedWidgetOfExactType`.
+- CI re-tests against the Plumix version declared in the packed nuspecs and runs a non-blocking
+  canary against the newest Plumix on NuGet. The pin is overridable via `-p:PlumixVersion=...`.
+
 - New `Plumix.Slang` package: a widget layer over [Slang.Net](https://www.nuget.org/packages/Slang.Net),
   ported from `slang_flutter`. `TranslationProvider<T>` publishes the active translations into the
   widget tree and rebuilds it on every culture change, `Translations<T>.Of(context)` reads them with
   a rebuild subscription, `LocaleSettings<T>` switches locales with slang's fallback rules.
   The generated `[Translations]` class opts in by implementing `ITranslations<TSelf>` (static
   abstract members — no reflection, trimming/AOT safe).
-- Pinned `Plumix` NuGet dependency moved from `0.1.0-alpha.3` to `0.1.0-alpha.13`; the old pin no
-  longer builds (`State.Mounted` is newer), so CI builds against the NuGet package were broken.
 
 - Build infrastructure: consolidated shared settings in `src/Directory.Build.props`
   (net10.0, nullable, warnings-as-errors, XML docs, analyzers, SourceLink/snupkg,

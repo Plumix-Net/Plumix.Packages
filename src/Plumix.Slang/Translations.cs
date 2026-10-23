@@ -28,7 +28,7 @@ public static class Translations<T>
     /// <summary>Like <see cref="Of"/>, but returns <c>null</c> when no provider is in scope.</summary>
     /// <param name="context">The build context of the reading widget.</param>
     public static T? MaybeOf(BuildContext context)
-        => context.DependOnInherited<TranslationScope<T>>()?.Translations;
+        => context.DependOnInheritedWidgetOfExactType<TranslationScope<T>>()?.Translations;
 
     /// <summary>
     /// Returns the active translations without subscribing to culture changes.
@@ -43,7 +43,7 @@ public static class Translations<T>
     /// <summary>Like <see cref="ReadOf"/>, but returns <c>null</c> when no provider is in scope.</summary>
     /// <param name="context">The build context of the reading widget.</param>
     public static T? ReadMaybeOf(BuildContext context)
-        => context.GetInherited<TranslationScope<T>>()?.Translations;
+        => context.GetInheritedWidgetOfExactType<TranslationScope<T>>()?.Translations;
 
     /// <summary>
     /// Returns the culture the nearest provider currently publishes and subscribes the calling
@@ -51,7 +51,7 @@ public static class Translations<T>
     /// </summary>
     /// <param name="context">The build context of the reading widget.</param>
     public static CultureInfo CultureOf(BuildContext context)
-        => context.DependOnInherited<TranslationScope<T>>()?.Culture
+        => context.DependOnInheritedWidgetOfExactType<TranslationScope<T>>()?.Culture
            ?? throw new InvalidOperationException(
                $"No TranslationProvider<{typeof(T).Name}> found in the widget tree.");
 }

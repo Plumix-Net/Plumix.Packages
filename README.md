@@ -10,6 +10,9 @@ Ports of popular Flutter packages for [Plumix](https://github.com/Plumix-Net/Plu
 | `Plumix.Bloc` | [![NuGet](https://img.shields.io/nuget/v/Plumix.Bloc)](https://www.nuget.org/packages/Plumix.Bloc) | [bloc](https://pub.dev/packages/bloc) + [flutter_bloc](https://pub.dev/packages/flutter_bloc) | alpha |
 | `Plumix.Slang` | [![NuGet](https://img.shields.io/nuget/v/Plumix.Slang)](https://www.nuget.org/packages/Plumix.Slang) | [slang_flutter](https://pub.dev/packages/slang_flutter) | alpha |
 
+All packages share one version line, taken from the release tag. The minimum supported
+Plumix version is the `Plumix` dependency listed for each package on NuGet.
+
 ---
 
 ## Plumix.Provider
@@ -132,8 +135,11 @@ The solution auto-detects the sibling `Plumix` repo and switches to a project re
 └── Plumix.Packages/ ← this repo
 ```
 
-To force the published NuGet package instead, pass `-p:UsePlumixLocal=false`.
-CI always builds against the pinned NuGet version from `src/Directory.Packages.props`.
+To force the published NuGet package instead, pass `-p:UsePlumixLocal=false`
+(add `-p:PlumixVersion=<version>` to try a specific Plumix release).
+CI always builds against the pinned NuGet version (`PlumixVersion` in `src/Directory.Packages.props`),
+re-tests against the Plumix version declared in the packed nuspecs, and runs a non-blocking
+canary build against the newest Plumix on NuGet.
 
 Build and test:
 

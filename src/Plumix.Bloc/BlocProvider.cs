@@ -57,7 +57,7 @@ public sealed class BlocProvider<TBloc> : StatefulWidget where TBloc : class, IB
 
     /// <summary>Like <see cref="Of"/>, but returns <c>null</c> when no provider is in scope.</summary>
     public static TBloc? MaybeOf(BuildContext context)
-        => context.DependOnInherited<BlocProviderScope<TBloc>>()?.Notifier;
+        => context.DependOnInheritedWidgetOfExactType<BlocProviderScope<TBloc>>()?.Notifier;
 
     /// <summary>
     /// Returns the nearest provided bloc without subscribing to rebuilds.
@@ -70,7 +70,7 @@ public sealed class BlocProvider<TBloc> : StatefulWidget where TBloc : class, IB
 
     /// <summary>Like <see cref="ReadOf"/>, but returns <c>null</c> when no provider is in scope.</summary>
     public static TBloc? ReadMaybeOf(BuildContext context)
-        => context.GetInherited<BlocProviderScope<TBloc>>()?.Notifier;
+        => context.GetInheritedWidgetOfExactType<BlocProviderScope<TBloc>>()?.Notifier;
 
     private sealed class BlocProviderState : State
     {

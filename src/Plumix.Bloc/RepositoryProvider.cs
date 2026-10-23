@@ -20,23 +20,16 @@ public sealed class RepositoryProvider<T> : InheritedWidget
     /// <param name="value">The value exposed to descendants.</param>
     /// <param name="child">The subtree that gains access to the value.</param>
     /// <param name="key">The widget key.</param>
-    public RepositoryProvider(T value, Widget child, Key? key = null) : base(key)
+    public RepositoryProvider(T value, Widget child, Key? key = null) : base(child, key)
     {
         Value = value;
-        Child = child;
     }
 
     /// <summary>The value exposed to descendants.</summary>
     public T Value { get; }
 
-    /// <summary>The subtree that gains access to the value.</summary>
-    public Widget Child { get; }
-
     /// <inheritdoc />
-    public override Widget Build(BuildContext context) => Child;
-
-    /// <inheritdoc />
-    protected override bool UpdateShouldNotify(InheritedWidget oldWidget)
+    public override bool UpdateShouldNotify(InheritedWidget oldWidget)
         => !EqualityComparer<T>.Default.Equals(((RepositoryProvider<T>)oldWidget).Value, Value);
 
     /// <summary>
@@ -52,7 +45,7 @@ public sealed class RepositoryProvider<T> : InheritedWidget
     [return: MaybeNull]
     public static T MaybeOf(BuildContext context)
     {
-        var provider = context.DependOnInherited<RepositoryProvider<T>>();
+        var provider = context.DependOnInheritedWidgetOfExactType<RepositoryProvider<T>>();
         return provider is not null ? provider.Value : default;
     }
 
@@ -73,7 +66,7 @@ public sealed class RepositoryProvider<T> : InheritedWidget
     [return: MaybeNull]
     public static T ReadMaybeOf(BuildContext context)
     {
-        var provider = context.GetInherited<RepositoryProvider<T>>();
+        var provider = context.GetInheritedWidgetOfExactType<RepositoryProvider<T>>();
         return provider is not null ? provider.Value : default;
     }
 }
