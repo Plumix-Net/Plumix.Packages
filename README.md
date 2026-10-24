@@ -6,9 +6,9 @@ Ports of popular Flutter packages for [Plumix](https://github.com/Plumix-Net/Plu
 
 | Package | NuGet | Flutter equivalent | Status |
 |---------|-------|--------------------|--------|
-| `Plumix.Provider` | [![NuGet](https://img.shields.io/nuget/v/Plumix.Provider)](https://www.nuget.org/packages/Plumix.Provider) | [provider](https://pub.dev/packages/provider) | alpha |
-| `Plumix.Bloc` | [![NuGet](https://img.shields.io/nuget/v/Plumix.Bloc)](https://www.nuget.org/packages/Plumix.Bloc) | [bloc](https://pub.dev/packages/bloc) + [flutter_bloc](https://pub.dev/packages/flutter_bloc) | alpha |
-| `Plumix.Slang` | [![NuGet](https://img.shields.io/nuget/v/Plumix.Slang)](https://www.nuget.org/packages/Plumix.Slang) | [slang_flutter](https://pub.dev/packages/slang_flutter) | alpha |
+| `Plumix.Provider` | [![NuGet](https://img.shields.io/nuget/v/Plumix.Provider)](https://www.nuget.org/packages/Plumix.Provider) | [provider](https://pub.dev/packages/provider) | beta |
+| `Plumix.Bloc` | [![NuGet](https://img.shields.io/nuget/v/Plumix.Bloc)](https://www.nuget.org/packages/Plumix.Bloc) | [bloc](https://pub.dev/packages/bloc) + [flutter_bloc](https://pub.dev/packages/flutter_bloc) | beta |
+| `Plumix.Slang` | [![NuGet](https://img.shields.io/nuget/v/Plumix.Slang)](https://www.nuget.org/packages/Plumix.Slang) | [slang_flutter](https://pub.dev/packages/slang_flutter) | beta |
 
 All packages share one version line, taken from the release tag. The minimum supported
 Plumix version is the `Plumix` dependency listed for each package on NuGet.

@@ -5,7 +5,7 @@
          lower bound of the Plumix dependency in every nuspec. Raise it together with any
          Plumix release that breaks binary compatibility.
          CI overrides it with -p:PlumixVersion=... to re-test against the packed dependency. -->
-    <PlumixVersion Condition="'$(PlumixVersion)' == ''">0.3.0-alpha.3</PlumixVersion>
+    <PlumixVersion Condition="'$(PlumixVersion)' == ''">0.4.0-beta.1</PlumixVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Plumix" Version="$(PlumixVersion)" />
