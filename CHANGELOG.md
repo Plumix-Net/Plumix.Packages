@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Raised the minimum Plumix dependency** to the first 1.0 preview (the RC API cleanup, with
+  framework `EdgeInsets` in place of Avalonia `Thickness`). The packages port unchanged.
 - **Raised the minimum Plumix dependency** to the release with the strict `InheritedWidget`
   port. Previous releases fail with it at runtime (`MissingMethodException` on the
   `InheritedWidget` constructor). Ported to the `InheritedWidget(child, key)` API:
