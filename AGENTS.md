@@ -4,7 +4,7 @@ This file defines expectations for coding agents working in this repository.
 
 ## Project Snapshot
 
-- Platform: .NET 10
+- Platform: .NET 11
 - Purpose: ports of popular Flutter packages for [Plumix](https://github.com/Plumix-Net/Plumix), a Flutter-like UI framework for .NET
 - Main solution: `src/Plumix.Packages.slnx`
 - Main framework repo (sibling): `../Plumix` — see its `AGENTS.md` for framework-level rules

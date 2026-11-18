@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Packages target .NET 11** (`net11.0`); consumers need the .NET 11 SDK.
 - **Raised the minimum Plumix dependency** to the first 1.0 preview (the RC API cleanup, with
   framework `EdgeInsets` in place of Avalonia `Thickness`). The packages port unchanged.
 - **Raised the minimum Plumix dependency** to the release with the strict `InheritedWidget`
