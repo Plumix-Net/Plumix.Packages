@@ -82,6 +82,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     permissions:
       contents: read
+      id-token: write   # NuGet trusted publishing: GitHub OIDC token -> short-lived API key
 
     steps:
       - uses: actions/checkout@v4
@@ -100,6 +101,14 @@ jobs:
           dotnet pack src/Plumix.Bloc/Plumix.Bloc.csproj         -c Release -p:Version=$PKG_VERSION
           dotnet pack src/Plumix.Slang/Plumix.Slang.csproj       -c Release -p:Version=$PKG_VERSION
 
+      # Trusted publishing policy on nuget.org (owner Plumix, repo Plumix-Net/Plumix.Packages, workflow ci.yml).
+      # NUGET_USER is the nuget.org profile name of the policy's creator; the key lives one hour.
+      - name: NuGet login (OIDC)
+        uses: NuGet/login@v1
+        id: nuget-login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
       # Symbol packages (.snupkg) are pushed automatically alongside each .nupkg
       - name: Push to NuGet.org
         run: |
@@ -109,7 +118,7 @@ jobs:
             src/Plumix.Slang/bin/Release/Plumix.Slang.${PKG_VERSION}.nupkg; do
             if [ -f "$pkg" ]; then
               dotnet nuget push "$pkg" \
-                --api-key ${{ secrets.NUGET_API_KEY }} \
+                --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} \
                 --source https://api.nuget.org/v3/index.json \
                 --skip-duplicate
             fi
