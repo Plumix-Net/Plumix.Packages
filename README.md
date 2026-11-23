@@ -7,11 +7,14 @@ Ports of popular Flutter packages for [Plumix](https://github.com/Plumix-Net/Plu
 | Package | NuGet | Flutter equivalent | Status |
 |---------|-------|--------------------|--------|
 | `Plumix.Provider` | [![NuGet](https://img.shields.io/nuget/v/Plumix.Provider)](https://www.nuget.org/packages/Plumix.Provider) | [provider](https://pub.dev/packages/provider) | beta |
-| `Plumix.Bloc` | [![NuGet](https://img.shields.io/nuget/v/Plumix.Bloc)](https://www.nuget.org/packages/Plumix.Bloc) | [bloc](https://pub.dev/packages/bloc) + [flutter_bloc](https://pub.dev/packages/flutter_bloc) | beta |
+| `Plumix.Bloc` | [![NuGet](https://img.shields.io/nuget/v/Plumix.Bloc)](https://www.nuget.org/packages/Plumix.Bloc) | [flutter_bloc](https://pub.dev/packages/flutter_bloc) | beta |
+| `Plumix.Bloc.Core` | [![NuGet](https://img.shields.io/nuget/v/Plumix.Bloc.Core)](https://www.nuget.org/packages/Plumix.Bloc.Core) | [bloc](https://pub.dev/packages/bloc) | beta |
 | `Plumix.Slang` | [![NuGet](https://img.shields.io/nuget/v/Plumix.Slang)](https://www.nuget.org/packages/Plumix.Slang) | [slang_flutter](https://pub.dev/packages/slang_flutter) | beta |
 
-All packages share one version line, taken from the release tag. The minimum supported
-Plumix version is the `Plumix` dependency listed for each package on NuGet.
+Each package carries the version of the pub package it ports (`Plumix.Provider 6.1.5`, `Plumix.Bloc 9.1.1`,
+`Plumix.Bloc.Core 9.2.1`, `Plumix.Slang 4.19.0`); a `-preview.N` suffix means the port has not reached full
+parity with that release yet ([versioning policy](https://github.com/Plumix-Net/Plumix/blob/main/docs/VERSIONING.md)).
+The minimum supported Plumix version is the `Plumix` dependency listed for each package on NuGet.
 
 ---
 
@@ -87,9 +90,12 @@ new Consumer<CounterModel>(
 
 ---
 
-## Plumix.Bloc
+## Plumix.Bloc and Plumix.Bloc.Core
 
-State management for Plumix with `Cubit<TState>` and `Bloc<TEvent, TState>`, plus widget bindings from `flutter_bloc`: `BlocProvider`, `BlocBuilder`, `BlocListener`, `BlocConsumer`, and `BlocSelector`.
+State management with `Cubit<TState>` and `Bloc<TEvent, TState>`, split like the Dart packages:
+`Plumix.Bloc.Core` ports `bloc` and has no UI dependency; `Plumix.Bloc` ports `flutter_bloc` —
+`BlocProvider`, `BlocBuilder`, `BlocListener`, `BlocConsumer`, `BlocSelector`, `RepositoryProvider` —
+and brings the core with it. Both use the `Plumix.Bloc` namespace; a Plumix app references `Plumix.Bloc`.
 
 ---
 
@@ -150,6 +156,7 @@ dotnet test src/Plumix.Packages.slnx -c Release
 
 ## Publishing
 
-Packages are published to NuGet.org automatically when a `v*.*.*` tag is pushed
-(the version is taken from the tag; symbol packages are pushed alongside).
-Set the `NUGET_API_KEY` secret in repository settings.
+Versions live in `src/Versions.props`. Packages are published to NuGet.org automatically when a
+release tag is pushed — `provider-v*`, `bloc-core-v*`, `bloc-v*` or `slang-v*`, matching
+`Versions.props` (symbol packages are pushed alongside). Publishing uses NuGet trusted publishing
+(OIDC); the only secret is `NUGET_USER`.

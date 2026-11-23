@@ -2,8 +2,12 @@
 
 [![NuGet](https://img.shields.io/nuget/v/Plumix.Bloc)](https://www.nuget.org/packages/Plumix.Bloc)
 
-Stream-based state management for [Plumix](https://github.com/Plumix-Net/Plumix) — a port of Flutter's [bloc](https://pub.dev/packages/bloc) package.
-Includes widget bindings inspired by [flutter_bloc](https://pub.dev/packages/flutter_bloc): `BlocProvider`, `BlocBuilder`, `BlocListener`, `BlocConsumer`, and `BlocSelector`.
+Widgets that make [Plumix.Bloc.Core](https://www.nuget.org/packages/Plumix.Bloc.Core) (`Cubit`, `Bloc`) work with
+[Plumix](https://github.com/Plumix-Net/Plumix) — a port of Flutter's [flutter_bloc](https://pub.dev/packages/flutter_bloc)
+package. Types stay in the `Plumix.Bloc` namespace, so one `using Plumix.Bloc;` covers both packages,
+and referencing this package brings the core with it.
+
+The package version is the version of `flutter_bloc` it ports; `-preview.N` until the port matches it in full.
 
 ## Installation
 
@@ -11,15 +15,7 @@ Includes widget bindings inspired by [flutter_bloc](https://pub.dev/packages/flu
 dotnet add package Plumix.Bloc
 ```
 
-## Core API
-
-| Plumix.Bloc | Flutter equivalent | Description |
-|---|---|---|
-| `Cubit<TState>` | `Cubit<State>` | Emits new states directly |
-| `Bloc<TEvent, TState>` | `Bloc<Event, State>` | Event-driven state management |
-| `Change<TState>` | `Change<State>` | State change payload |
-| `Transition<TEvent, TState>` | `Transition<Event, State>` | Event-to-state transition payload |
-| `EventTransformers` | `bloc_concurrency`-style behavior | `Sequential`, `Concurrent`, `Restartable`, `Droppable` |
+## Widgets
 
 | Plumix.Bloc | Flutter equivalent | Description |
 |---|---|---|
@@ -81,5 +77,5 @@ context.Read<CounterCubit>().Increment();
 
 ## See also
 
-- [Plumix](https://github.com/Plumix-Net/Plumix) — the core framework
+- [Plumix.Bloc.Core](https://www.nuget.org/packages/Plumix.Bloc.Core) — `Cubit`, `Bloc` and the rest of the core (port of `bloc`)
 - [Plumix.Provider](https://www.nuget.org/packages/Plumix.Provider) — simpler notifier-based state management

@@ -1,16 +1,24 @@
-// Dart parity source (reference): pub.dev/packages/bloc and pub.dev/packages/flutter_bloc (approximate)
-
-using Plumix.Foundation;
+// Dart parity source (reference): pub.dev/packages/bloc (approximate)
 
 namespace Plumix.Bloc;
 
 /// <summary>
 /// Non-generic base contract shared by all blocs and cubits.
-/// Allows widgets such as <see cref="BlocProvider{TBloc}"/> to manage instances
-/// without knowing their state type.
+/// Allows widgets such as flutter_bloc's <c>BlocProvider</c> (package <c>Plumix.Bloc</c>) to manage
+/// instances without knowing their state type.
 /// </summary>
-public interface IBlocBase : IListenable, IDisposable
+/// <remarks>
+/// The package has no Plumix dependency, like Dart's <c>bloc</c> has no Flutter one. The listener pair below
+/// matches Plumix's <c>IListenable</c> shape, so the widget layer adapts a bloc to it without a stream subscription.
+/// </remarks>
+public interface IBlocBase : IDisposable
 {
+    /// <summary>Registers a callback invoked after every state change.</summary>
+    void AddListener(Action listener);
+
+    /// <summary>Removes a callback previously registered with <see cref="AddListener"/>.</summary>
+    void RemoveListener(Action listener);
+
     /// <summary>The current state as an untyped object.</summary>
     object? StateObject { get; }
 

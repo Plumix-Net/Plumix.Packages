@@ -1,0 +1,25 @@
+<Project>
+  <!--
+    Package versions — the single source of truth (policy: Plumix repo docs/VERSIONING.md).
+
+    Each package carries the version of the pub.dev package it ports:
+      PlumixProviderVersion     provider
+      PlumixBlocCoreVersion     bloc          (Plumix.Bloc.Core)
+      PlumixBlocVersion         flutter_bloc  (Plumix.Bloc)
+      PlumixSlangVersion        slang_flutter
+
+    `-preview.N` while the port has not reached full parity with that upstream version; the bare
+    upstream version once it has; a fourth segment (X.Y.Z.N) for Plumix-only fixes after parity.
+    Dart's build suffix (`6.1.5+1`) is dropped: NuGet ignores `+metadata`.
+
+    A release tag must match its package here (CI checks): `provider-v<...>`, `bloc-core-v<...>`,
+    `bloc-v<...>`, `slang-v<...>`. Plumix.Bloc declares PlumixBlocCoreVersion as its nuspec floor
+    (ProjectReference), so bump a package here in the commit that is tagged for it.
+  -->
+  <PropertyGroup>
+    <PlumixProviderVersion>6.1.5-preview.1</PlumixProviderVersion>
+    <PlumixBlocCoreVersion>9.2.1-preview.1</PlumixBlocCoreVersion>
+    <PlumixBlocVersion>9.1.1-preview.1</PlumixBlocVersion>
+    <PlumixSlangVersion>4.19.0-preview.1</PlumixSlangVersion>
+  </PropertyGroup>
+</Project>

@@ -3,6 +3,8 @@
   <PropertyGroup>
     <IsPackable>true</IsPackable>
     <PackageId>Plumix.Provider</PackageId>
+    <!-- Versioned after the provider pub package it ports (Versions.props). -->
+    <Version>$(PlumixProviderVersion)</Version>
     <Description>A port of Flutter's provider package for Plumix. State management via InheritedWidget: ChangeNotifierProvider, Consumer, MultiProvider and context.Watch/Read extensions.</Description>
   </PropertyGroup>
 

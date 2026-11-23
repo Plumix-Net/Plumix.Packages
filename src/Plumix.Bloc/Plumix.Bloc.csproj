@@ -3,7 +3,13 @@
   <PropertyGroup>
     <IsPackable>true</IsPackable>
     <PackageId>Plumix.Bloc</PackageId>
-    <Description>A port of Flutter's bloc package for Plumix. Stream-based state management: Bloc, Cubit, BlocProvider, BlocBuilder, BlocListener.</Description>
+    <!-- Versioned after the flutter_bloc pub package it ports (Versions.props). -->
+    <Version>$(PlumixBlocVersion)</Version>
+    <Description>A port of Flutter's flutter_bloc package for Plumix: BlocProvider, BlocBuilder, BlocListener, BlocConsumer, BlocSelector and RepositoryProvider. Brings Plumix.Bloc.Core (Cubit, Bloc) with it.</Description>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Plumix.Bloc.Core\Plumix.Bloc.Core.csproj" />
+  </ItemGroup>
 
 </Project>

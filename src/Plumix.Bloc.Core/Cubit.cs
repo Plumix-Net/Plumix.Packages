@@ -1,7 +1,5 @@
 // Dart parity source (reference): pub.dev/packages/bloc (approximate)
 
-using Plumix.Foundation;
-
 namespace Plumix.Bloc;
 
 /// <summary>

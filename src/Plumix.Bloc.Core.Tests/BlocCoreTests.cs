@@ -3,7 +3,7 @@ using Xunit;
 
 // Dart parity source (reference): pub.dev/packages/bloc; pub.dev/packages/flutter_bloc (core behavior regression tests)
 
-namespace Plumix.Bloc.Tests;
+namespace Plumix.Bloc.Core.Tests;
 
 public sealed class BlocCoreTests
 {

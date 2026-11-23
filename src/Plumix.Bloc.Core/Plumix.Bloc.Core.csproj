@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>Plumix.Bloc.Core</PackageId>
+    <!-- Versioned after the bloc pub package it ports (Versions.props). -->
+    <Version>$(PlumixBlocCoreVersion)</Version>
+    <!-- Dart's bloc has no Flutter dependency; this port has no Plumix one. -->
+    <UsesPlumix>false</UsesPlumix>
+    <!-- Types share the Plumix.Bloc namespace with the widget package, as flutter_bloc re-exports bloc. -->
+    <RootNamespace>Plumix.Bloc</RootNamespace>
+    <PackageTags>bloc;cubit;state-management;flutter;dotnet;plumix</PackageTags>
+    <Description>A port of Dart's bloc package for .NET: Cubit, Bloc, transitions, event transformers and observers. No UI dependency; the Plumix widget bindings are in Plumix.Bloc.</Description>
+  </PropertyGroup>
+
+</Project>

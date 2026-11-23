@@ -33,10 +33,6 @@
     <PackageIcon>icon.png</PackageIcon>
     <!-- Disable packaging by default; library projects opt in explicitly -->
     <IsPackable>false</IsPackable>
-    <!-- Release versions come from the v*.*.* tag via -p:Version on CI;
-         local packs get a placeholder dev version. -->
-    <VersionPrefix>0.0.0</VersionPrefix>
-    <VersionSuffix>dev</VersionSuffix>
     <!-- SourceLink / deterministic packages -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -44,17 +40,23 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
-  <!-- Shared package content and the Plumix dependency for packable projects -->
+  <!-- Package versions: each csproj sets <Version> from its line in Versions.props (the version of the
+       pub.dev package it ports). Never pass -p:Version: as a global property it would also restamp the
+       ProjectReference floor of Plumix.Bloc on Plumix.Bloc.Core. -->
+  <Import Project="$(MSBuildThisFileDirectory)Versions.props" />
+
+  <!-- Shared package content and the Plumix dependency for packable projects.
+       A package that ports a pure-Dart library (Plumix.Bloc.Core ports bloc) sets UsesPlumix=false. -->
   <ItemGroup Condition="'$(IsPackable)' == 'true'">
     <None Include="$(MSBuildProjectDirectory)/README.md" Pack="true" PackagePath="\" />
     <None Include="$(MSBuildThisFileDirectory)../LICENSE" Pack="true" PackagePath="\" />
     <None Include="$(MSBuildThisFileDirectory)../icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(IsPackable)' == 'true' and '$(UsePlumixLocal)' != 'true'">
+  <ItemGroup Condition="'$(IsPackable)' == 'true' and '$(UsesPlumix)' != 'false' and '$(UsePlumixLocal)' != 'true'">
     <PackageReference Include="Plumix" />
   </ItemGroup>
-  <ItemGroup Condition="'$(IsPackable)' == 'true' and '$(UsePlumixLocal)' == 'true'">
+  <ItemGroup Condition="'$(IsPackable)' == 'true' and '$(UsesPlumix)' != 'false' and '$(UsePlumixLocal)' == 'true'">
     <ProjectReference Include="$(_PlumixCsproj)" />
   </ItemGroup>
 </Project>

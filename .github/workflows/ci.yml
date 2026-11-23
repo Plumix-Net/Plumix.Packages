@@ -3,7 +3,8 @@ name: CI
 on:
   push:
     branches: [main]
-    tags: ['v*.*.*']
+    # Release tags, one per package (docs/VERSIONING.md in the Plumix repo, scripts/release_plan.sh).
+    tags: ['provider-v*.*.*', 'bloc-core-v*.*.*', 'bloc-v*.*.*', 'slang-v*.*.*']
   pull_request:
     branches: [main]
 
@@ -33,14 +34,15 @@ jobs:
         run: dotnet pack src/Plumix.Packages.slnx -c Release --no-build
 
       # Rebuild and retest against the Plumix version the packed nuspecs actually declare
-      # as their minimum, so a package never promises compatibility it was not tested with
+      # as their minimum, so a package never promises compatibility it was not tested with.
+      # Plumix.Bloc.Core (port of the pure-Dart bloc) declares no Plumix dependency at all.
       - name: Test against nuspec Plumix dependency
         run: |
           set -euo pipefail
           deps=$(for pkg in src/Plumix.*/bin/Release/Plumix.*.nupkg; do
             unzip -p "$pkg" '*.nuspec' \
               | sed -n 's/.*<dependency id="Plumix" version="\([^"]*\)".*/\1/p'
-          done | sort -u)
+          done | sed '/^$/d' | sort -u)
           if [ "$(echo "$deps" | wc -l)" -ne 1 ] || [ -z "$deps" ]; then
             echo "::error::Packages must declare one Plumix dependency, found: $deps"
             exit 1
@@ -74,12 +76,18 @@ jobs:
           dotnet test src/Plumix.Packages.slnx -c Release \
             -p:UsePlumixLocal=false -p:PlumixVersion="$latest"
 
-  # ─── Pack & Publish (tags only) ────────────────────────────────────────────
+  # ─── Pack & Publish (release tags only) ────────────────────────────────────
+  # Any release tag pushes every package at its src/Versions.props version; packages already on
+  # nuget.org are skipped as duplicates. scripts/release_plan.sh checks the tag and that every
+  # unpublished package is tagged. Runs for tags of one commit queue behind each other.
   publish:
     name: Pack & Publish to NuGet
     runs-on: ubuntu-latest
     needs: build
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/')
+    concurrency:
+      group: publish-${{ github.sha }}
+      cancel-in-progress: false
     permissions:
       contents: read
       id-token: write   # NuGet trusted publishing: GitHub OIDC token -> short-lived API key
@@ -92,14 +100,13 @@ jobs:
         with:
           dotnet-version: '11.x'
 
-      - name: Extract version from tag
-        run: echo "PKG_VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
+      - name: Check tag and plan the release
+        run: scripts/release_plan.sh "$GITHUB_REF_NAME" >> "$GITHUB_ENV"
 
+      # Versions come from src/Versions.props; never -p:Version (it would restamp the
+      # Plumix.Bloc -> Plumix.Bloc.Core floor).
       - name: Pack
-        run: |
-          dotnet pack src/Plumix.Provider/Plumix.Provider.csproj -c Release -p:Version=$PKG_VERSION
-          dotnet pack src/Plumix.Bloc/Plumix.Bloc.csproj         -c Release -p:Version=$PKG_VERSION
-          dotnet pack src/Plumix.Slang/Plumix.Slang.csproj       -c Release -p:Version=$PKG_VERSION
+        run: dotnet pack src/Plumix.Packages.slnx -c Release --output artifacts/nuget
 
       # Trusted publishing policy on nuget.org (owner Plumix, repo Plumix-Net/Plumix.Packages, workflow ci.yml).
       # NUGET_USER is the nuget.org profile name of the policy's creator; the key lives one hour.
@@ -111,15 +118,19 @@ jobs:
 
       # Symbol packages (.snupkg) are pushed automatically alongside each .nupkg
       - name: Push to NuGet.org
+        shell: bash
+        env:
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
         run: |
-          for pkg in \
-            src/Plumix.Provider/bin/Release/Plumix.Provider.${PKG_VERSION}.nupkg \
-            src/Plumix.Bloc/bin/Release/Plumix.Bloc.${PKG_VERSION}.nupkg \
-            src/Plumix.Slang/bin/Release/Plumix.Slang.${PKG_VERSION}.nupkg; do
-            if [ -f "$pkg" ]; then
-              dotnet nuget push "$pkg" \
-                --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} \
-                --source https://api.nuget.org/v3/index.json \
-                --skip-duplicate
+          set -euo pipefail
+          for stem in $RELEASE_PACKAGES; do
+            pkg="artifacts/nuget/${stem}.nupkg"
+            if [[ ! -f "$pkg" ]]; then
+              echo "::error::NuGet package was not created: $pkg"
+              exit 1
             fi
+            dotnet nuget push "$pkg" \
+              --api-key "$NUGET_API_KEY" \
+              --source https://api.nuget.org/v3/index.json \
+              --skip-duplicate
           done

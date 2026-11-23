@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Plumix.Bloc\Plumix.Bloc.csproj" />
+    <ProjectReference Include="..\Plumix.Bloc.Core\Plumix.Bloc.Core.csproj" />
   </ItemGroup>
 
 </Project>

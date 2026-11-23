@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- **Breaking: the bloc core moves to the new `Plumix.Bloc.Core`** (port of `bloc`: Cubit, Bloc, observers; no
+  Plumix dependency); `Plumix.Bloc` keeps the widgets (port of `flutter_bloc`) and depends on it, so apps keep their
+  reference. Types keep the `Plumix.Bloc` namespace. `IBlocBase` no longer implements Plumix's `IListenable` (it
+  keeps `AddListener`/`RemoveListener`).
+- **Versions follow the ported pub package**: `Plumix.Provider 6.1.5`, `Plumix.Bloc 9.1.1` (`flutter_bloc`),
+  `Plumix.Bloc.Core 9.2.1` (`bloc`), `Plumix.Slang 4.19.0`, each `-preview.N` until full parity. Numbers live in
+  `src/Versions.props`; release tags are per package (`provider-v*`, `bloc-core-v*`, `bloc-v*`, `slang-v*`).
+
 - **Packages target .NET 11** (`net11.0`); consumers need the .NET 11 SDK.
 - **Raised the minimum Plumix dependency** to the first 1.0 preview (the RC API cleanup, with
   framework `EdgeInsets` in place of Avalonia `Thickness`). The packages port unchanged.

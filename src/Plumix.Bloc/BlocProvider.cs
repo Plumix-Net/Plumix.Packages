@@ -57,7 +57,7 @@ public sealed class BlocProvider<TBloc> : StatefulWidget where TBloc : class, IB
 
     /// <summary>Like <see cref="Of"/>, but returns <c>null</c> when no provider is in scope.</summary>
     public static TBloc? MaybeOf(BuildContext context)
-        => context.DependOnInheritedWidgetOfExactType<BlocProviderScope<TBloc>>()?.Notifier;
+        => context.DependOnInheritedWidgetOfExactType<BlocProviderScope<TBloc>>()?.Notifier?.Bloc;
 
     /// <summary>
     /// Returns the nearest provided bloc without subscribing to rebuilds.
@@ -70,11 +70,12 @@ public sealed class BlocProvider<TBloc> : StatefulWidget where TBloc : class, IB
 
     /// <summary>Like <see cref="ReadOf"/>, but returns <c>null</c> when no provider is in scope.</summary>
     public static TBloc? ReadMaybeOf(BuildContext context)
-        => context.GetInheritedWidgetOfExactType<BlocProviderScope<TBloc>>()?.Notifier;
+        => context.GetInheritedWidgetOfExactType<BlocProviderScope<TBloc>>()?.Notifier?.Bloc;
 
     private sealed class BlocProviderState : State
     {
         private TBloc? _bloc;
+        private BlocListenable<TBloc>? _listenable;
         private bool _ownsBloc;
 
         private BlocProvider<TBloc> TypedWidget => (BlocProvider<TBloc>)StateWidget;
@@ -122,8 +123,15 @@ public sealed class BlocProvider<TBloc> : StatefulWidget where TBloc : class, IB
 
         public override Widget Build(BuildContext context)
         {
+            TBloc bloc = RequireBloc();
+            // One adapter per bloc instance: a new notifier would read as a change to every dependent.
+            if (_listenable is null || !ReferenceEquals(_listenable.Bloc, bloc))
+            {
+                _listenable = new BlocListenable<TBloc>(bloc);
+            }
+
             return new BlocProviderScope<TBloc>(
-                bloc: RequireBloc(),
+                listenable: _listenable,
                 child: TypedWidget.Child);
         }
 
@@ -162,9 +170,24 @@ public sealed class BlocProvider<TBloc> : StatefulWidget where TBloc : class, IB
     }
 }
 
-internal sealed class BlocProviderScope<TBloc> : InheritedNotifier<TBloc> where TBloc : class, IBlocBase
+internal sealed class BlocProviderScope<TBloc> : InheritedNotifier<BlocListenable<TBloc>>
+    where TBloc : class, IBlocBase
 {
-    public BlocProviderScope(TBloc bloc, Widget child, Key? key = null) : base(bloc, child, key)
+    public BlocProviderScope(BlocListenable<TBloc> listenable, Widget child, Key? key = null)
+        : base(listenable, child, key)
     {
     }
+}
+
+/// <summary>
+/// Presents a bloc as Plumix's <see cref="IListenable"/>: the core package (Plumix.Bloc.Core) does not depend on
+/// Plumix, so <see cref="IBlocBase"/> carries the listener pair without implementing the framework interface.
+/// </summary>
+internal sealed class BlocListenable<TBloc>(TBloc bloc) : IListenable where TBloc : class, IBlocBase
+{
+    public TBloc Bloc { get; } = bloc;
+
+    public void AddListener(Action listener) => Bloc.AddListener(listener);
+
+    public void RemoveListener(Action listener) => Bloc.RemoveListener(listener);
 }

@@ -11,11 +11,12 @@ This file defines expectations for coding agents working in this repository.
 
 ## Repository Map
 
-| Path | Contents | Flutter/Dart original |
-|------|----------|-----------------------|
-| `src/Plumix.Provider` | `Provider`, `ChangeNotifierProvider`, `Consumer`, `MultiProvider`, `context.Watch/Read` | [provider](https://pub.dev/packages/provider) |
-| `src/Plumix.Bloc` | `Cubit`, `Bloc`, `BlocProvider`, `BlocBuilder`, `BlocListener`, `BlocConsumer`, `BlocSelector` | [bloc](https://pub.dev/packages/bloc) + [flutter_bloc](https://pub.dev/packages/flutter_bloc) |
-| `src/Plumix.Slang` | `ITranslations`, `TranslationProvider`, `Translations.Of(context)`, `LocaleSettings` — widget layer over [Slang.Net](https://www.nuget.org/packages/Slang.Net) | [slang_flutter](https://pub.dev/packages/slang_flutter) |
+| Path | Contents | Flutter/Dart original (pin) |
+|------|----------|-----------------------------|
+| `src/Plumix.Provider` | `Provider`, `ChangeNotifierProvider`, `Consumer`, `MultiProvider`, `context.Watch/Read` | [provider](https://pub.dev/packages/provider) 6.1.5 |
+| `src/Plumix.Bloc.Core` | `Cubit`, `Bloc`, `Change`, `Transition`, `EventTransformers`, `IBlocObserver` — no Plumix dependency (namespace `Plumix.Bloc`) | [bloc](https://pub.dev/packages/bloc) 9.2.1 |
+| `src/Plumix.Bloc` | `BlocProvider`, `BlocBuilder`, `BlocListener`, `BlocConsumer`, `BlocSelector`, `RepositoryProvider`, `context.Read/Watch` — depends on `Plumix.Bloc.Core` | [flutter_bloc](https://pub.dev/packages/flutter_bloc) 9.1.1 |
+| `src/Plumix.Slang` | `ITranslations`, `TranslationProvider`, `Translations.Of(context)`, `LocaleSettings` — widget layer over [Slang.Net](https://www.nuget.org/packages/Slang.Net) | [slang_flutter](https://pub.dev/packages/slang_flutter) 4.19.0 |
 | `src/*.Tests` | xunit test projects, one per package | — |
 
 ## Change Guidelines
@@ -28,10 +29,12 @@ This file defines expectations for coding agents working in this repository.
 3. Analyzer severities live in `.editorconfig`. CA1000/CA1711/CA1716 are intentionally
    disabled — they conflict with the Flutter-parity API surface (static `Of(context)`
    accessors, `event`/`error` parameter names). Do not re-enable or "fix" these.
-4. Shared build settings live in `src/Directory.Build.props`; package versions in
-   `src/Directory.Packages.props` (central package management). A new package project
-   needs only `IsPackable`, `PackageId`, `Description` in its csproj plus a `README.md`
-   in the project directory.
+4. Shared build settings live in `src/Directory.Build.props`; dependency versions in
+   `src/Directory.Packages.props` (central package management); our own package versions in
+   `src/Versions.props`. A new package project needs `IsPackable`, `PackageId`, `Description`,
+   `<Version>$(Plumix<Name>Version)</Version>` (a new line in `Versions.props`, the version of
+   the pub package it ports) in its csproj plus a `README.md` in the project directory. A port
+   of a pure-Dart package (no Flutter dependency, like `bloc`) sets `UsesPlumix=false`.
 5. Non-trivial logic needs test coverage in the matching `*.Tests` project.
    Note: widget-tree tests (mount/pump) are not possible from this repo yet —
    `Element.Mount/Attach/Rebuild` are internal to Plumix. Test the publicly observable
@@ -54,14 +57,22 @@ dotnet pack  src/Plumix.Packages.slnx -c Release   # packaging smoke check
 
 ## Releases
 
-- Push a `v*.*.*` tag; CI packs with that version and publishes both packages
-  (plus `.snupkg` symbols) to NuGet.org. All packages share one version line.
+- Versions follow the pub package each port targets (policy: `docs/VERSIONING.md` in the Plumix
+  repo): `X.Y.Z-preview.N` until full parity with upstream `X.Y.Z`, then `X.Y.Z`, then `X.Y.Z.N`
+  for our fixes. The numbers live only in `src/Versions.props`; the pin moves only after parity.
+- Release: bump the package(s) in `src/Versions.props`, tag the commit once per bumped package
+  (`provider-v*`, `bloc-core-v*`, `bloc-v*`, `slang-v*`) and push the tags together. CI
+  (`scripts/release_plan.sh`) checks each tag against `Versions.props`, refuses an unpublished
+  version without its tag, and pushes every package (plus `.snupkg` symbols) with
+  `--skip-duplicate`.
 - Record shipped changes in `CHANGELOG.md` (short entries, a few lines per change).
 - `PlumixVersion` in `src/Directory.Packages.props` is the minimum Plumix version every
   nuspec declares (`>=`). When a Plumix release breaks binary compatibility, raise it to that
-  release in the same change that ports the code. Do not repeat version numbers in READMEs
-  or the changelog — the tag sets the package version, the nuspec carries the Plumix floor.
+  release in the same change that ports the code. Do not repeat release numbers
+  (`-preview.N`) in READMEs or the changelog — `Versions.props` sets the package version, the
+  nuspec carries the Plumix floor. Upstream pins (`provider 6.1.5`) may be named; update them
+  when a pin moves.
   Never ship a dependency floor the packages were not tested against — CI re-tests against
   the version read from the packed nuspecs.
-- Do not hardcode `Version` in csproj files; local packs get the placeholder `0.0.0-dev`
-  via `VersionPrefix`/`VersionSuffix` in `src/Directory.Build.props`.
+- Do not hardcode a version number in a csproj (only `$(Plumix<Name>Version)`), and never
+  pass `-p:Version`: it would restamp the `Plumix.Bloc` → `Plumix.Bloc.Core` floor.

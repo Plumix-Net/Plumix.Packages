@@ -3,6 +3,8 @@
   <PropertyGroup>
     <IsPackable>true</IsPackable>
     <PackageId>Plumix.Slang</PackageId>
+    <!-- Versioned after the slang_flutter pub package it ports (Versions.props). -->
+    <Version>$(PlumixSlangVersion)</Version>
     <Description>A port of Flutter's slang_flutter package for Plumix. Context-based translations over Slang.Net: TranslationProvider, Translations.Of(context), LocaleSettings — locale switches repaint the widget tree instantly.</Description>
   </PropertyGroup>
 

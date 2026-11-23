@@ -1,6 +1,7 @@
 <Solution>
   <Project Path="Plumix.Bloc/Plumix.Bloc.csproj" />
-  <Project Path="Plumix.Bloc.Tests/Plumix.Bloc.Tests.csproj" />
+  <Project Path="Plumix.Bloc.Core/Plumix.Bloc.Core.csproj" />
+  <Project Path="Plumix.Bloc.Core.Tests/Plumix.Bloc.Core.Tests.csproj" />
   <Project Path="Plumix.Provider/Plumix.Provider.csproj" />
   <Project Path="Plumix.Provider.Tests/Plumix.Provider.Tests.csproj" />
   <Project Path="Plumix.Slang/Plumix.Slang.csproj" />
