@@ -61,7 +61,8 @@ dotnet pack  src/Plumix.Packages.slnx -c Release   # packaging smoke check
   repo): `X.Y.Z-preview.N` until full parity with upstream `X.Y.Z`, then `X.Y.Z`, then `X.Y.Z.N`
   for our fixes. The numbers live only in `src/Versions.props`; the pin moves only after parity.
 - Release: bump the package(s) in `src/Versions.props`, tag the commit once per bumped package
-  (`provider-v*`, `bloc-core-v*`, `bloc-v*`, `slang-v*`) and push the tags together. CI
+  (`provider-v*`, `bloc-core-v*`, `bloc-v*`, `slang-v*`) and push the tags together (with
+  more than three tags GitHub starts no run: re-push one tag alone, it releases them all). CI
   (`scripts/release_plan.sh`) checks each tag against `Versions.props`, refuses an unpublished
   version without its tag, and pushes every package (plus `.snupkg` symbols) with
   `--skip-duplicate`.

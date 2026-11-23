@@ -12,6 +12,8 @@
 # already on nuget.org are skipped and a dependency released in the same commit is pushed with its
 # dependent. Every package whose version is not on nuget.org yet must carry its own tag on origin, so
 # no version ships untagged — push all release tags of a commit in one `git push origin <tag>...`.
+# GitHub creates no events for a push of more than three tags: then re-push one tag on its own
+# (Plumix repo docs/VERSIONING.md, Releasing).
 #
 # Usage:
 #   scripts/release_plan.sh bloc-v9.2.1-preview.1 >> "$GITHUB_ENV"
