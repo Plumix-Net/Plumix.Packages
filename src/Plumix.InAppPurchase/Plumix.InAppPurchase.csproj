@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\PlatformPlugin.props" />
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>Plumix.InAppPurchase</PackageId>
+    <!-- Versioned after the in_app_purchase pub package it ports (Versions.props). -->
+    <Version>$(PlumixInAppPurchaseVersion)</Version>
+    <PackageTags>in-app-purchase;iap;storekit;google-play-billing;subscriptions;android;ios;flutter;dotnet;plumix</PackageTags>
+    <Description>A port of Flutter's in_app_purchase plugin for Plumix and .NET mobile apps: one API over the App Store (StoreKit) and Google Play Billing — query products, buy subscriptions and one-time products, listen to the purchase stream, restore and complete purchases.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Plumix.InAppPurchase.Tests" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(_PlumixPlatform)' == 'android'">
+    <PackageReference Include="Xamarin.Android.Google.BillingClient" />
+  </ItemGroup>
+
+</Project>

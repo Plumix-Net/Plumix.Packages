@@ -7,13 +7,17 @@
       PlumixBlocCoreVersion     bloc          (Plumix.Bloc.Core)
       PlumixBlocVersion         flutter_bloc  (Plumix.Bloc)
       PlumixSlangVersion        slang_flutter
+      PlumixGoogleSignInVersion     google_sign_in
+      PlumixSignInWithAppleVersion  sign_in_with_apple
+      PlumixInAppPurchaseVersion    in_app_purchase
 
     `-preview.N` while the port has not reached full parity with that upstream version; the bare
     upstream version once it has; a fourth segment (X.Y.Z.N) for Plumix-only fixes after parity.
     Dart's build suffix (`6.1.5+1`) is dropped: NuGet ignores `+metadata`.
 
     A release tag must match its package here (CI checks): `provider-v<...>`, `bloc-core-v<...>`,
-    `bloc-v<...>`, `slang-v<...>`. Plumix.Bloc declares PlumixBlocCoreVersion as its nuspec floor
+    `bloc-v<...>`, `slang-v<...>`, `google-sign-in-v<...>`,
+    `sign-in-with-apple-v<...>`, `in-app-purchase-v<...>`. Plumix.Bloc declares PlumixBlocCoreVersion as its nuspec floor
     (ProjectReference), so bump a package here in the commit that is tagged for it.
   -->
   <PropertyGroup>
@@ -21,5 +25,8 @@
     <PlumixBlocCoreVersion>9.2.1-preview.1</PlumixBlocCoreVersion>
     <PlumixBlocVersion>9.1.1-preview.1</PlumixBlocVersion>
     <PlumixSlangVersion>4.19.0-preview.1</PlumixSlangVersion>
+    <PlumixGoogleSignInVersion>7.2.0-preview.1</PlumixGoogleSignInVersion>
+    <PlumixSignInWithAppleVersion>8.2.0-preview.1</PlumixSignInWithAppleVersion>
+    <PlumixInAppPurchaseVersion>3.3.1-preview.1</PlumixInAppPurchaseVersion>
   </PropertyGroup>
 </Project>

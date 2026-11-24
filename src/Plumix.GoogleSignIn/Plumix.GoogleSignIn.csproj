@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\PlatformPlugin.props" />
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>Plumix.GoogleSignIn</PackageId>
+    <!-- Versioned after the google_sign_in pub package it ports (Versions.props). -->
+    <Version>$(PlumixGoogleSignInVersion)</Version>
+    <PackageTags>google;sign-in;oauth;authentication;android;ios;flutter;dotnet;plumix</PackageTags>
+    <Description>A port of Flutter's google_sign_in plugin for Plumix and .NET mobile apps: GoogleSignIn.Instance.AuthenticateAsync gives the user and a Google ID token for your backend — Credential Manager's "Sign in with Google" on Android, Google's OAuth with PKCE in ASWebAuthenticationSession on iOS.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Plumix.GoogleSignIn.Tests" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(_PlumixPlatform)' == 'android'">
+    <PackageReference Include="Xamarin.AndroidX.Credentials" />
+    <PackageReference Include="Xamarin.AndroidX.Credentials.PlayServicesAuth" />
+    <PackageReference Include="Xamarin.GoogleAndroid.Libraries.Identity.GoogleId" />
+  </ItemGroup>
+
+</Project>

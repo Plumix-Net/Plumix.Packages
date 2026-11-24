@@ -1,0 +1,56 @@
+<Project>
+  <!--
+    Shared settings of the platform plugins — ports of Flutter plugins whose work is done by the OS
+    (google_sign_in, sign_in_with_apple, in_app_purchase). Imported by their csproj.
+
+    One package, one public API, three builds (bait and switch): net11.0 carries the API with an implementation
+    that reports the platform as unsupported, net11.0-android and net11.0-ios the real one. A plain net11.0 library
+    (an app's shared UI project) compiles against the API; the app head (net11.0-android / net11.0-ios) gets the
+    platform build through NuGet's per-TFM asset selection.
+
+    Folder convention: Android/** compiles only for net11.0-android, iOS/** only for net11.0-ios, Unsupported/**
+    only for plain net11.0; everything else in every build. Shared/** of this folder (the current Android activity,
+    the iOS presentation anchor) is linked into each plugin as internal types.
+  -->
+  <PropertyGroup>
+    <TargetFramework></TargetFramework>
+    <TargetFrameworks>net11.0</TargetFrameworks>
+    <TargetFrameworks Condition="'$(PlumixMobileTargets)' == 'true'">net11.0;net11.0-android;net11.0-ios</TargetFrameworks>
+    <!-- Flutter plugins sit on the OS, not on the widget layer: no Plumix dependency. -->
+    <UsesPlumix>false</UsesPlumix>
+    <IsAotCompatible>true</IsAotCompatible>
+    <!-- TargetPlatformIdentifier is inferred after the project body: read the platform off the TFM. -->
+    <_PlumixPlatform>default</_PlumixPlatform>
+    <_PlumixPlatform Condition="$(TargetFramework.EndsWith('-android'))">android</_PlumixPlatform>
+    <_PlumixPlatform Condition="$(TargetFramework.EndsWith('-ios'))">ios</_PlumixPlatform>
+    <SupportedOSPlatformVersion Condition="'$(_PlumixPlatform)' == 'android'">24</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="'$(_PlumixPlatform)' == 'ios'">15.0</SupportedOSPlatformVersion>
+    <DefineConstants Condition="'$(_PlumixPlatform)' == 'default'">$(DefineConstants);PLUMIX_UNSUPPORTED_PLATFORM</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Android's and iOS's implicit namespaces are not wanted in the shared API files. -->
+    <Using Remove="Android.App" />
+    <Using Remove="Android.Widget" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(_PlumixPlatform)' != 'android'">
+    <Compile Remove="Android/**" />
+    <None Include="Android/**" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(_PlumixPlatform)' != 'ios'">
+    <Compile Remove="iOS/**" />
+    <None Include="iOS/**" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(_PlumixPlatform)' != 'default'">
+    <Compile Remove="Unsupported/**" />
+    <None Include="Unsupported/**" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(_PlumixPlatform)' == 'android'">
+    <Compile Include="$(MSBuildThisFileDirectory)Shared/Android/**/*.cs" Link="Shared/Android/%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(_PlumixPlatform)' == 'ios'">
+    <Compile Include="$(MSBuildThisFileDirectory)Shared/iOS/**/*.cs" Link="Shared/iOS/%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

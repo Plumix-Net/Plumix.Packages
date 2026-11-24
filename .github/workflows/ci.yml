@@ -4,7 +4,8 @@ on:
   push:
     branches: [main]
     # Release tags, one per package (docs/VERSIONING.md in the Plumix repo, scripts/release_plan.sh).
-    tags: ['provider-v*.*.*', 'bloc-core-v*.*.*', 'bloc-v*.*.*', 'slang-v*.*.*']
+    tags: ['provider-v*.*.*', 'bloc-core-v*.*.*', 'bloc-v*.*.*', 'slang-v*.*.*',
+           'google-sign-in-v*.*.*', 'sign-in-with-apple-v*.*.*', 'in-app-purchase-v*.*.*']
   pull_request:
     branches: [main]
 
@@ -22,8 +23,9 @@ jobs:
         with:
           dotnet-version: '11.x'
 
+      # net11.0 only here: the platform plugins' Android and iOS builds need workloads (release job, macOS)
       - name: Build
-        run: dotnet build src/Plumix.Packages.slnx -c Release
+        run: dotnet build src/Plumix.Packages.slnx -c Release -p:PlumixMobileTargets=false
 
       - name: Test
         run: dotnet test src/Plumix.Packages.slnx -c Release --no-build
@@ -81,9 +83,12 @@ jobs:
   # nuget.org are skipped as duplicates. scripts/release_plan.sh checks the tag and that every
   # unpublished package is tagged. Runs for tags of one commit push in parallel: --skip-duplicate
   # turns the second push of a version into a no-op (no concurrency group: it cancels queued runs).
+  # The platform plugins (GoogleSignIn, SignInWithApple, InAppPurchase) pack net11.0-android and net11.0-ios next to
+  # net11.0 into one nupkg; the iOS workload builds only on macOS, so the release packs there. Build and test jobs
+  # run on Linux with net11.0 only (PlumixMobileTargets defaults to false off macOS).
   publish:
     name: Pack & Publish to NuGet
-    runs-on: ubuntu-latest
+    runs-on: xcode-27
     needs: build
     if: startsWith(github.ref, 'refs/tags/')
     permissions:
@@ -101,10 +106,33 @@ jobs:
       - name: Check tag and plan the release
         run: scripts/release_plan.sh "$GITHUB_REF_NAME" >> "$GITHUB_ENV"
 
+      # The .NET 11 iOS workload is built against Xcode 27.2; the image defaults to an earlier one.
+      - name: Select Xcode 27.2
+        run: sudo xcode-select -s /Applications/Xcode_27.2.app
+
+      - name: Setup Java 17 (Android bindings)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install Android and iOS workloads
+        run: dotnet workload install android ios
+
       # Versions come from src/Versions.props; never -p:Version (it would restamp the
       # Plumix.Bloc -> Plumix.Bloc.Core floor).
       - name: Pack
-        run: dotnet pack src/Plumix.Packages.slnx -c Release --output artifacts/nuget
+        run: dotnet pack src/Plumix.Packages.slnx -c Release -p:PlumixMobileTargets=true --output artifacts/nuget
+
+      - name: Check the platform plugins carry all three targets
+        run: |
+          set -euo pipefail
+          for id in Plumix.GoogleSignIn Plumix.SignInWithApple Plumix.InAppPurchase; do
+            pkg=$(ls artifacts/nuget/$id.[0-9]*.nupkg | grep -v snupkg)
+            for tfm in net11.0 net11.0-android net11.0-ios; do
+              unzip -l "$pkg" | grep -q "lib/$tfm[0-9.]*/$id.dll" || { echo "::error::$pkg has no lib/$tfm"; exit 1; }
+            done
+          done
 
       # Trusted publishing policy on nuget.org (owner Plumix, repo Plumix-Net/Plumix.Packages, workflow ci.yml).
       # NUGET_USER is the nuget.org profile name of the policy's creator; the key lives one hour.

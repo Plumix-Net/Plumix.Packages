@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- **New platform plugins** — ports of Flutter plugins whose work is done by the OS; no Plumix dependency, one
+  package with `net11.0` (API, reports the platform unsupported), `net11.0-android` and `net11.0-ios`:
+  - `Plumix.GoogleSignIn` (google_sign_in 7.2.0): `GoogleSignIn.Instance` — initialize, authenticate, lightweight
+    authentication, sign-out, disconnect, events. Android: Credential Manager ("Sign in with Google"). iOS: Google's
+    OAuth with PKCE in `ASWebAuthenticationSession`, the session in the Keychain. The authorization client is not
+    ported yet.
+  - `Plumix.SignInWithApple` (sign_in_with_apple 8.2.0): `GetAppleIDCredentialAsync`, `GetCredentialStateAsync`
+    through `ASAuthorizationController`; iOS only (the web flow is not ported).
+  - `Plumix.InAppPurchase` (in_app_purchase 3.3.1): products, buy, purchase stream, complete, restore, country —
+    Play Billing Library 8 on Android, StoreKit 1 on iOS (StoreKit 2 is Swift-only).
+- The release job packs on macOS with the Android and iOS workloads; build and test stay on Linux (`net11.0`).
+
 ## Provider 6.1.5-preview.1, Bloc 9.1.1-preview.1, Bloc.Core 9.2.1-preview.1, Slang 4.19.0-preview.1 — 2026-11-23
 
 - **Breaking: the bloc core moves to the new `Plumix.Bloc.Core`** (port of `bloc`: Cubit, Bloc, observers; no

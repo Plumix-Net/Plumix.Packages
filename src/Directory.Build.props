@@ -40,6 +40,14 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
+  <!-- Platform plugins (Plumix.GoogleSignIn, Plumix.SignInWithApple, Plumix.InAppPurchase) add net11.0-android and
+       net11.0-ios next to net11.0 when PlumixMobileTargets is true. The iOS workload builds only on macOS, so it
+       defaults to true there and false elsewhere; the release job packs on macOS with both workloads installed.
+       Override with -p:PlumixMobileTargets=false (no workloads) or true. -->
+  <PropertyGroup>
+    <PlumixMobileTargets Condition="'$(PlumixMobileTargets)' == ''">$([MSBuild]::IsOSPlatform('OSX'))</PlumixMobileTargets>
+  </PropertyGroup>
+
   <!-- Package versions: each csproj sets <Version> from its line in Versions.props (the version of the
        pub.dev package it ports). Never pass -p:Version: as a global property it would also restamp the
        ProjectReference floor of Plumix.Bloc on Plumix.Bloc.Core. -->

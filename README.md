@@ -10,11 +10,20 @@ Ports of popular Flutter packages for [Plumix](https://github.com/Plumix-Net/Plu
 | `Plumix.Bloc` | [![NuGet](https://img.shields.io/nuget/v/Plumix.Bloc)](https://www.nuget.org/packages/Plumix.Bloc) | [flutter_bloc](https://pub.dev/packages/flutter_bloc) | beta |
 | `Plumix.Bloc.Core` | [![NuGet](https://img.shields.io/nuget/v/Plumix.Bloc.Core)](https://www.nuget.org/packages/Plumix.Bloc.Core) | [bloc](https://pub.dev/packages/bloc) | beta |
 | `Plumix.Slang` | [![NuGet](https://img.shields.io/nuget/v/Plumix.Slang)](https://www.nuget.org/packages/Plumix.Slang) | [slang_flutter](https://pub.dev/packages/slang_flutter) | beta |
+| `Plumix.GoogleSignIn` | [![NuGet](https://img.shields.io/nuget/v/Plumix.GoogleSignIn)](https://www.nuget.org/packages/Plumix.GoogleSignIn) | [google_sign_in](https://pub.dev/packages/google_sign_in) | preview |
+| `Plumix.SignInWithApple` | [![NuGet](https://img.shields.io/nuget/v/Plumix.SignInWithApple)](https://www.nuget.org/packages/Plumix.SignInWithApple) | [sign_in_with_apple](https://pub.dev/packages/sign_in_with_apple) | preview |
+| `Plumix.InAppPurchase` | [![NuGet](https://img.shields.io/nuget/v/Plumix.InAppPurchase)](https://www.nuget.org/packages/Plumix.InAppPurchase) | [in_app_purchase](https://pub.dev/packages/in_app_purchase) | preview |
 
 Each package carries the version of the pub package it ports (`Plumix.Provider 6.1.5`, `Plumix.Bloc 9.1.1`,
 `Plumix.Bloc.Core 9.2.1`, `Plumix.Slang 4.19.0`); a `-preview.N` suffix means the port has not reached full
 parity with that release yet ([versioning policy](https://github.com/Plumix-Net/Plumix/blob/main/docs/VERSIONING.md)).
 The minimum supported Plumix version is the `Plumix` dependency listed for each package on NuGet.
+
+The last three are **platform plugins**: the OS does the work, so they have no Plumix dependency and work in any .NET
+Android / iOS app. One package carries `net11.0` (the API; reports the platform as unsupported), `net11.0-android`
+and `net11.0-ios` — reference it from a shared `net11.0` project and the heads get the platform build. Their usage is
+in each package's README: [GoogleSignIn](src/Plumix.GoogleSignIn/README.md),
+[SignInWithApple](src/Plumix.SignInWithApple/README.md), [InAppPurchase](src/Plumix.InAppPurchase/README.md).
 
 ---
 

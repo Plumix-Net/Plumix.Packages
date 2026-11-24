@@ -6,4 +6,10 @@
   <Project Path="Plumix.Provider.Tests/Plumix.Provider.Tests.csproj" />
   <Project Path="Plumix.Slang/Plumix.Slang.csproj" />
   <Project Path="Plumix.Slang.Tests/Plumix.Slang.Tests.csproj" />
+  <Project Path="Plumix.GoogleSignIn/Plumix.GoogleSignIn.csproj" />
+  <Project Path="Plumix.GoogleSignIn.Tests/Plumix.GoogleSignIn.Tests.csproj" />
+  <Project Path="Plumix.InAppPurchase/Plumix.InAppPurchase.csproj" />
+  <Project Path="Plumix.InAppPurchase.Tests/Plumix.InAppPurchase.Tests.csproj" />
+  <Project Path="Plumix.SignInWithApple/Plumix.SignInWithApple.csproj" />
+  <Project Path="Plumix.SignInWithApple.Tests/Plumix.SignInWithApple.Tests.csproj" />
 </Solution>

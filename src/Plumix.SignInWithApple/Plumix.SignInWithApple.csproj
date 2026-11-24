@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\PlatformPlugin.props" />
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>Plumix.SignInWithApple</PackageId>
+    <!-- Versioned after the sign_in_with_apple pub package it ports (Versions.props). -->
+    <Version>$(PlumixSignInWithAppleVersion)</Version>
+    <PackageTags>apple;sign-in;authentication;ios;flutter;dotnet;plumix</PackageTags>
+    <Description>A port of Flutter's sign_in_with_apple plugin for Plumix and .NET mobile apps: SignInWithApple.GetAppleIDCredentialAsync shows Apple's native sheet (ASAuthorizationController) and returns the identity token and authorization code for your backend.</Description>
+  </PropertyGroup>
+
+  <!-- Android has no Apple sign-in of its own (the Dart package's web flow is not ported): the Android build is the
+       unsupported one. -->
+  <ItemGroup Condition="'$(_PlumixPlatform)' == 'android'">
+    <Compile Include="Unsupported/**" />
+    <None Remove="Unsupported/**" />
+  </ItemGroup>
+
+</Project>

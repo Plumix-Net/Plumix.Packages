@@ -7,6 +7,9 @@
 #   bloc-core     bloc-core-v<PlumixBlocCoreVersion>         Plumix.Bloc.Core (port of bloc)
 #   bloc          bloc-v<PlumixBlocVersion>                  Plumix.Bloc (port of flutter_bloc, depends on Core)
 #   slang         slang-v<PlumixSlangVersion>                Plumix.Slang
+#   google-sign-in      google-sign-in-v<PlumixGoogleSignInVersion>          Plumix.GoogleSignIn
+#   sign-in-with-apple  sign-in-with-apple-v<PlumixSignInWithAppleVersion>   Plumix.SignInWithApple
+#   in-app-purchase     in-app-purchase-v<PlumixInAppPurchaseVersion>        Plumix.InAppPurchase
 #
 # A release pushes every package at its Versions.props version with --skip-duplicate, so packages
 # already on nuget.org are skipped and a dependency released in the same commit is pushed with its
@@ -34,6 +37,9 @@ lines=(
   "bloc-core|bloc-core-v|$(read_version PlumixBlocCoreVersion)|Plumix.Bloc.Core"
   "bloc|bloc-v|$(read_version PlumixBlocVersion)|Plumix.Bloc"
   "slang|slang-v|$(read_version PlumixSlangVersion)|Plumix.Slang"
+  "google-sign-in|google-sign-in-v|$(read_version PlumixGoogleSignInVersion)|Plumix.GoogleSignIn"
+  "sign-in-with-apple|sign-in-with-apple-v|$(read_version PlumixSignInWithAppleVersion)|Plumix.SignInWithApple"
+  "in-app-purchase|in-app-purchase-v|$(read_version PlumixInAppPurchaseVersion)|Plumix.InAppPurchase"
 )
 
 version_pattern='^[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-[0-9A-Za-z]+(\.[0-9A-Za-z]+)*)?$'
@@ -55,7 +61,7 @@ for entry in "${lines[@]}"; do
   fi
 done
 if [[ -z "$tag_line" ]]; then
-  echo "::error::Unknown release tag '$tag' (expected provider-v*, bloc-core-v*, bloc-v* or slang-v*)" >&2
+  echo "::error::Unknown release tag '$tag' (expected provider-v*, bloc-core-v*, bloc-v*, slang-v*, google-sign-in-v*, sign-in-with-apple-v* or in-app-purchase-v*)" >&2
   exit 1
 fi
 

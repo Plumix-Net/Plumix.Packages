@@ -10,6 +10,11 @@
   <ItemGroup>
     <PackageVersion Include="Plumix" Version="$(PlumixVersion)" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.4.0" />
+    <!-- Android bindings of the platform plugins -->
+    <PackageVersion Include="Xamarin.AndroidX.Credentials" Version="1.6.0.1" />
+    <PackageVersion Include="Xamarin.AndroidX.Credentials.PlayServicesAuth" Version="1.6.0.2" />
+    <PackageVersion Include="Xamarin.GoogleAndroid.Libraries.Identity.GoogleId" Version="1.1.0.13" />
+    <PackageVersion Include="Xamarin.Android.Google.BillingClient" Version="9.1.0.2" />
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
   </ItemGroup>
