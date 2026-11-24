@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## GoogleSignIn 7.2.0-preview.1, SignInWithApple 8.2.0-preview.1, InAppPurchase 3.3.1-preview.1 — 2026-11-24
 
 - **New platform plugins** — ports of Flutter plugins whose work is done by the OS; no Plumix dependency, one
   package with `net11.0` (API, reports the platform unsupported), `net11.0-android` and `net11.0-ios`:
