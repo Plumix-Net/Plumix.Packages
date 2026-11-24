@@ -58,14 +58,14 @@ internal sealed class AndroidInAppPurchase : InAppPurchasePlatform
                 .SetProductId(id).SetProductType(type).Build()).ToList();
             var parameters = QueryProductDetailsParams.NewBuilder().SetProductList(products).Build();
 
-            var result = await client.QueryProductDetailsAsync(parameters).ConfigureAwait(false);
-            if (result.Result.ResponseCode != BillingResponseCode.Ok)
+            var (result, answered) = await QueryAsync(client, parameters).ConfigureAwait(false);
+            if (result.ResponseCode != BillingResponseCode.Ok)
             {
-                error ??= ToError(result.Result);
+                error ??= ToError(result);
                 continue;
             }
 
-            foreach (var details in result.ProductDetailsList)
+            foreach (var details in answered)
                 found.AddRange(ToProductDetails(details));
         }
 
@@ -168,6 +168,20 @@ internal sealed class AndroidInAppPurchase : InAppPurchasePlatform
         var result = await OnUiThreadAsync(activity, () => client.LaunchBillingFlow(activity, flow.Build()))
             .ConfigureAwait(false);
         return result.ResponseCode == BillingResponseCode.Ok;
+    }
+
+    /// <summary>
+    /// <c>queryProductDetailsAsync</c> through our own listener. The binding's <c>QueryProductDetailsAsync</c> wraps
+    /// the answer in <c>new QueryProductDetailsResult()</c>, a Java class without a no-argument constructor since
+    /// Billing 8: the callback throws <c>NoSuchMethodError</c> and its task never completes.
+    /// </summary>
+    private static Task<(BillingResult Result, IReadOnlyList<PlayProductDetails> Products)> QueryAsync(
+        BillingClient client, QueryProductDetailsParams parameters)
+    {
+        var done = new TaskCompletionSource<(BillingResult, IReadOnlyList<PlayProductDetails>)>(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        client.QueryProductDetails(parameters, new ProductDetailsListener(done));
+        return done.Task;
     }
 
     private async Task<BillingClient?> ReadyClientAsync()
@@ -301,6 +315,24 @@ internal sealed class AndroidInAppPurchase : InAppPurchasePlatform
     {
         public void OnPurchasesUpdated(BillingResult result, IList<Purchase>? purchases) =>
             owner.OnPurchasesUpdated(result, purchases);
+    }
+
+    private sealed class ProductDetailsListener(
+        TaskCompletionSource<(BillingResult, IReadOnlyList<PlayProductDetails>)> done)
+        : Java.Lang.Object, IProductDetailsResponseListener
+    {
+        public void OnProductDetailsResponse(BillingResult result, QueryProductDetailsResult queryResult)
+        {
+            try
+            {
+                // Copied inside the callback: the list wrapper's reference does not outlive it
+                done.TrySetResult((result, [.. queryResult.ProductDetailsList]));
+            }
+            catch (Exception e)
+            {
+                done.TrySetException(e);
+            }
+        }
     }
 
     private sealed class StateListener(TaskCompletionSource<BillingResult> connected)

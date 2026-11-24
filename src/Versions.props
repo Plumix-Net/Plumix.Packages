@@ -27,6 +27,6 @@
     <PlumixSlangVersion>4.19.0-preview.1</PlumixSlangVersion>
     <PlumixGoogleSignInVersion>7.2.0-preview.1</PlumixGoogleSignInVersion>
     <PlumixSignInWithAppleVersion>8.2.0-preview.1</PlumixSignInWithAppleVersion>
-    <PlumixInAppPurchaseVersion>3.3.1-preview.1</PlumixInAppPurchaseVersion>
+    <PlumixInAppPurchaseVersion>3.3.1-preview.2</PlumixInAppPurchaseVersion>
   </PropertyGroup>
 </Project>

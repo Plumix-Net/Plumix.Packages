@@ -1,5 +1,12 @@
 # Changelog
 
+## InAppPurchase 3.3.1-preview.2 — 2026-11-24
+
+- **Fix: Android product queries never completed.** The BillingClient binding's `QueryProductDetailsAsync` wraps the
+  answer in `new QueryProductDetailsResult()`, a Java class with no no-argument constructor since Billing 8, so its
+  callback threw `NoSuchMethodError` and `QueryProductDetailsAsync` waited forever. The plugin now queries through its
+  own listener and fails the task if the callback throws.
+
 ## GoogleSignIn 7.2.0-preview.1, SignInWithApple 8.2.0-preview.1, InAppPurchase 3.3.1-preview.1 — 2026-11-24
 
 - **New platform plugins** — ports of Flutter plugins whose work is done by the OS; no Plumix dependency, one
